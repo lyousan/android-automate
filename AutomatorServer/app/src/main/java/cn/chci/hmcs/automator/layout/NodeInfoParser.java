@@ -25,7 +25,7 @@ public class NodeInfoParser {
      *
      * @param nodeInfo 节点信息
      * @param builder  用于字符串拼接
-     * @return
+     * @return 返回传入节点的字符串XML格式
      */
     private static String convertToXMLString(NodeInfo nodeInfo, StringBuilder builder) {
         StringBuilder result = new StringBuilder();
@@ -76,7 +76,7 @@ public class NodeInfoParser {
                 .append(" ").append("password=\"").append(node.isPassword()).append("\"")
                 .append(" ").append("selected=\"").append(node.isSelected()).append("\"")
                 .append(" ").append("bounds=\"").append(rect.toShortString()).append("\"")
-                // 注意：这个localId是用来辅助服务端实现xpath定位能力的，用来跟真实节点关联的，不能用于xpath表达式中
-                .append(" ").append("localId=\"").append(nodeInfo.getCacheId()).append("\"");
+                // 注意：这个cacheId并不是原生存在的，是用来辅助服务端实现xpath定位能力的，用来跟真实节点关联的，不能用于xpath表达式中
+                .append(" ").append("cacheId=\"").append(nodeInfo.getCacheId()).append("\"");
     }
 }
