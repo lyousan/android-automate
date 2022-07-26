@@ -1,0 +1,4 @@
+<resources>
+    <string name="app_name">Automator</string>
+    <string name="accessibility_description">AutomatorDescription</string>
+</resources>
