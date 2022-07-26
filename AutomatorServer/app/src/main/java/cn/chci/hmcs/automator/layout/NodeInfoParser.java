@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator;
+package cn.chci.hmcs.automator.layout;
 
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -33,7 +33,7 @@ public class NodeInfoParser {
         CharSequence className = node.getClassName();
         result.append("<").append(className);
         // 填充节点的属性
-        populateAttrs(node, result);
+        populateAttrs(nodeInfo, result);
         List<NodeInfo> children = nodeInfo.getChildren();
         if (children.size() > 0) {
             // 存在子节点就继续递归转换
@@ -54,11 +54,12 @@ public class NodeInfoParser {
     /**
      * 填充属性
      *
-     * @param node    节点
-     * @param builder 字用于字符串拼接
+     * @param nodeInfo 节点信息
+     * @param builder  字用于字符串拼接
      */
-    private static void populateAttrs(AccessibilityNodeInfo node, StringBuilder builder) {
+    private static void populateAttrs(NodeInfo nodeInfo, StringBuilder builder) {
         Rect rect = new Rect();
+        AccessibilityNodeInfo node = nodeInfo.getNode();
         node.getBoundsInScreen(rect);
         builder.append(" ").append("resource-id=\"").append(node.getViewIdResourceName() == null ? "" : node.getViewIdResourceName()).append("\"")
                 .append(" ").append("class=\"").append(node.getClassName()).append("\"")
@@ -74,6 +75,8 @@ public class NodeInfoParser {
                 .append(" ").append("long-clickable=\"").append(node.isLongClickable()).append("\"")
                 .append(" ").append("password=\"").append(node.isPassword()).append("\"")
                 .append(" ").append("selected=\"").append(node.isSelected()).append("\"")
-                .append(" ").append("bounds=\"").append(rect.toShortString()).append("\"");
+                .append(" ").append("bounds=\"").append(rect.toShortString()).append("\"")
+                // 注意：这个localId是用来辅助服务端实现xpath定位能力的，用来跟真实节点关联的，不能用于xpath表达式中
+                .append(" ").append("localId=\"").append(nodeInfo.getCacheId()).append("\"");
     }
 }

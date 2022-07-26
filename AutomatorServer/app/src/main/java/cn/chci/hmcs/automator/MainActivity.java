@@ -12,6 +12,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import cn.chci.hmcs.automator.core.Server;
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

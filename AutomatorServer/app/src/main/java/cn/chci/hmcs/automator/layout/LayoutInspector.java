@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator;
+package cn.chci.hmcs.automator.layout;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
@@ -8,6 +8,10 @@ import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
+
+import cn.chci.hmcs.automator.MyAccessibilityService;
+import cn.chci.hmcs.automator.layout.NodeInfo;
 
 /**
  * 该类用于获取界面节点信息，从开源项目autojs中截取的部分核心代码，使用该类的时候请确保已经获得了无障碍权限
@@ -15,6 +19,7 @@ import java.util.HashMap;
 public class LayoutInspector {
     private static final String LOG_TAG = "hmcs-automator";
     private final Context mContext;
+    private static final AtomicInteger count = new AtomicInteger(0);
 
     public LayoutInspector(Context mContext) {
         this.mContext = mContext;
@@ -44,20 +49,18 @@ public class LayoutInspector {
         String packageName = node.getPackageName().toString();
         // 这个resources暂时不知道可以干什么，直接从autojs里扣过来的
         Resources resources = null;
-        if (packageName != null) {
-            resources = resourcesCache.get(packageName);
-            if (resources == null) {
-                try {
-                    resources = context.getPackageManager().getResourcesForApplication(packageName);
-                    resourcesCache.put(packageName, resources);
-                } catch (PackageManager.NameNotFoundException e) {
-                    // 这个地方也许会经常报错，但是不影响获取界面的节点
-                    Log.w(LOG_TAG, "capture: 未找到对应的app " + e.getMessage());
-                }
+        resources = resourcesCache.get(packageName);
+        if (resources == null) {
+            try {
+                resources = context.getPackageManager().getResourcesForApplication(packageName);
+                resourcesCache.put(packageName, resources);
+            } catch (PackageManager.NameNotFoundException e) {
+                // 这个地方也许会经常报错，但是不影响获取界面的节点
+                Log.w(LOG_TAG, "capture: 未找到对应的app " + e.getMessage());
             }
         }
         // 深度优先将界面节点重新包装一层构建成树形结构
-        NodeInfo nodeInfo = new NodeInfo(node, resources, parent);
+        NodeInfo nodeInfo = new NodeInfo(node, resources, parent, String.valueOf(count.getAndAdd(1)));
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++) {
             AccessibilityNodeInfo child = node.getChild(i);

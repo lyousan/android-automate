@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator;
+package cn.chci.hmcs.automator.core;
 
 import android.util.Log;
 
@@ -12,13 +12,17 @@ import java.io.PipedOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.zip.GZIPOutputStream;
+
+import cn.chci.hmcs.automator.utils.BeanContextHolder;
+import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.layout.NodeInfo;
+import cn.chci.hmcs.automator.layout.NodeInfoParser;
 
 public class Server {
     private static final String LOG_TAG = "hmcs-automator";

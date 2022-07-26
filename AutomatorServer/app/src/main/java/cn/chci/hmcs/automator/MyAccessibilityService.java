@@ -11,6 +11,9 @@ import android.view.accessibility.AccessibilityEvent;
 
 import java.util.List;
 
+import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.utils.BeanContextHolder;
+
 public class MyAccessibilityService extends AccessibilityService {
     private static final String LOG_TAG = "hmcs-automator";
     @SuppressLint("StaticFieldLeak")
