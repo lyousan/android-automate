@@ -1,14 +1,7 @@
-package cn.chci.hmcs.automator.core;
+package cn.chci.hmcs.automator.socket;
 
 import android.util.Log;
 
-import org.dom4j.DocumentException;
-
-import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
 import java.net.ServerSocket;
@@ -19,14 +12,10 @@ import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.zip.GZIPOutputStream;
 
-import cn.chci.hmcs.automator.layout.LayoutCache;
-import cn.chci.hmcs.automator.utils.BeanContextHolder;
-import cn.chci.hmcs.automator.layout.LayoutInspector;
-import cn.chci.hmcs.automator.layout.NodeInfo;
-import cn.chci.hmcs.automator.layout.NodeInfoParser;
-import cn.chci.hmcs.automator.utils.LayoutInspectorGetter;
+import cn.chci.hmcs.automator.dto.Request;
+import cn.chci.hmcs.automator.dto.Response;
+import cn.chci.hmcs.automator.fn.Executor;
 
 public class Server {
     private static final String LOG_TAG = "hmcs-automator";
@@ -74,24 +63,30 @@ public class Server {
     /**
      * 用于触发socket输出的方法
      *
-     * @param id   socket的id
-     * @param type TODO 后续作为指令进行不同的操作
+     * @param id      socket的id
+     * @param request 客户端发送的请求
      */
-    static void emit(Integer id, String type) {
+    static void emit(Integer id, Request request) {
         try {
-            String msg = "很高兴收到你的消息: " + type;
+            // 获取Command
+            // 执行Command
+            Response response = Executor.execute(request.getCommand());
+            response.setRequestId(request.getId());
+            // 序列化执行结果
+            String msg = Response.convertToJson(response);
+//            String msg = "很高兴收到你的消息: " + commandName;
             // TODO 目前瞎写的处理
-            if (type.equalsIgnoreCase("dump")) {
+            /*if (commandName.equalsIgnoreCase("dump")) {
                 // 该类用于获取当前界面的节点信息
                 LayoutInspector layoutInspector = LayoutInspectorGetter.getInstance();
                 NodeInfo nodeInfo = layoutInspector.captureCurrentWindow();
                 // 将节点信息解析成xml
                 msg = NodeInfoParser.toXMLString(nodeInfo);
                 LayoutCache.save(msg, nodeInfo);
-            } else if (type.equalsIgnoreCase("find")) {
-                NodeInfo one = LayoutCache.findOne(type);
+            } else if (commandName.equalsIgnoreCase("find")) {
+                NodeInfo one = LayoutCache.findOne(commandName);
                 msg = NodeInfoParser.toXMLString(one);
-            }
+            }*/
             Log.d(LOG_TAG, "send msg: " + msg);
             byte[] compressed = SocketWriteHandler.compress(msg.getBytes(StandardCharsets.UTF_8));
             PipedOutputStream pipedOutputStream = PIPE_OUT.get(id);

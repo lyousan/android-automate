@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.layout;
+package cn.chci.hmcs.automator.model;
 
 import android.content.res.Resources;
 import android.view.accessibility.AccessibilityNodeInfo;
@@ -10,7 +10,7 @@ import java.util.UUID;
 /**
  * 对界面节点信息的包装，便于遍历、转换
  */
-public class NodeInfo {
+public class Node {
     /**
      * 真实的节点信息
      */
@@ -19,8 +19,8 @@ public class NodeInfo {
      * 从autojs里扣过来的，暂时不知道可以干什么，但是应该有用
      */
     private final Resources resources;
-    private final NodeInfo parent;
-    private List<NodeInfo> children = new ArrayList<>();
+    private final Node parent;
+    private List<Node> children = new ArrayList<>();
     /**
      * 该字段用于在缓存中定位到节点，曲线实现xpath的查找功能，在返回给客户端界面信息时，本地通过dom4j将其转换为Document并缓存起来，
      * 在检索节点时，客户端传递xpath，然后服务端在缓存里查询节点，但是dom4j转换的毕竟是字符格式xml，更实际的节点并不对应，
@@ -28,14 +28,14 @@ public class NodeInfo {
      */
     private final String cacheId;
 
-    public NodeInfo(AccessibilityNodeInfo node, Resources resources, NodeInfo parent) {
+    public Node(AccessibilityNodeInfo node, Resources resources, Node parent) {
         this.resources = resources;
         this.node = node;
         this.parent = parent;
         this.cacheId = UUID.randomUUID().toString();
     }
 
-    public NodeInfo(AccessibilityNodeInfo node, Resources resources, NodeInfo parent, String cacheId) {
+    public Node(AccessibilityNodeInfo node, Resources resources, Node parent, String cacheId) {
         this.resources = resources;
         this.node = node;
         this.parent = parent;
@@ -50,15 +50,15 @@ public class NodeInfo {
         return resources;
     }
 
-    public NodeInfo getParent() {
+    public Node getParent() {
         return parent;
     }
 
-    public List<NodeInfo> getChildren() {
+    public List<Node> getChildren() {
         return children;
     }
 
-    public void setChildren(List<NodeInfo> children) {
+    public void setChildren(List<Node> children) {
         this.children = children;
     }
 

@@ -9,9 +9,14 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
+import org.dom4j.DocumentException;
+
 import java.util.List;
 
+import cn.chci.hmcs.automator.layout.LayoutCache;
 import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.model.Node;
+import cn.chci.hmcs.automator.layout.LayoutParser;
 import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {
@@ -38,20 +43,26 @@ public class MyAccessibilityService extends AccessibilityService {
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
             case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
                 break;
+            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
-        }
-        // 测试代码，这个地方不能这么搞，一直获取会崩的
-        if (!isCapturing) {
-            synchronized (this) {
+            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
                 if (!isCapturing) {
-                    isCapturing = true;
-//                    NodeInfo nodeInfo = layoutInspector.captureCurrentWindow();
-//                    String xmlString = NodeInfoParser.toXMLString(nodeInfo);
-//                    Log.d(LOG_TAG, "onAccessibilityEvent: " + xmlString);
-                    isCapturing = false;
+                    synchronized (this) {
+                        if (!isCapturing) {
+                            isCapturing = true;
+                            Node node = layoutInspector.captureCurrentWindow();
+                            String xmlString = LayoutParser.toXMLString(node);
+                            try {
+                                LayoutCache.save(xmlString, node);
+                            } catch (DocumentException e) {
+                                e.printStackTrace();
+                            }
+                            isCapturing = false;
+                        }
+                    }
                 }
-            }
         }
+
     }
 
     @Override

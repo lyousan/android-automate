@@ -1,5 +1,10 @@
 package cn.chci.hmcs.automator.socket;
 
+import cn.chci.hmcs.automator.core.ReceiveListenerContextHolder;
+import cn.chci.hmcs.automator.dto.Response;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,8 +19,10 @@ import java.util.zip.GZIPInputStream;
  **/
 public class SocketReadHandler implements Runnable {
     private final Socket socket;
+    private final Client client;
 
-    public SocketReadHandler(Socket socket) {
+    public SocketReadHandler(Client client, Socket socket) {
+        this.client = client;
         this.socket = socket;
     }
 
@@ -64,7 +71,10 @@ public class SocketReadHandler implements Runnable {
                 // 解压字节数组，转成字符串使用即可
                 decompressData = decompress(decompressData);
                 String msg = new String(decompressData);
-                System.out.println("收到服务端消息: [ " + msg + " ]");
+                Response response = JSON.parseObject(msg, Response.class);
+                msg = JSON.toJSONString(response, JSONWriter.Feature.PrettyFormat);
+                System.out.println("收到服务端消息:  " + msg + " ");
+                ReceiveListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {
             e.printStackTrace();

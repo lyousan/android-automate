@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.chci.hmcs.automator.MyAccessibilityService;
-import cn.chci.hmcs.automator.layout.NodeInfo;
+import cn.chci.hmcs.automator.model.Node;
 
 /**
  * 该类用于获取界面节点信息，从开源项目autojs中截取的部分核心代码，使用该类的时候请确保已经获得了无障碍权限
@@ -25,7 +25,8 @@ public class LayoutInspector {
         this.mContext = mContext;
     }
 
-    public NodeInfo captureCurrentWindow() {
+    public synchronized Node captureCurrentWindow() {
+        count.set(0);
         AccessibilityService service = MyAccessibilityService.instance;
         if (service == null) {
             Log.d(LOG_TAG, "captureCurrentWindow: AccessibilityService is NULL");
@@ -36,16 +37,15 @@ public class LayoutInspector {
             Log.d(LOG_TAG, "captureCurrentWindow: RootInActiveWindow is NULL");
             return null;
         }
-        NodeInfo nodeInfo = capture(mContext, root);
-        return nodeInfo;
+        return capture(mContext, root);
     }
 
-    private NodeInfo capture(Context context, AccessibilityNodeInfo root) {
+    private Node capture(Context context, AccessibilityNodeInfo root) {
         HashMap<String, Resources> resourcesCache = new HashMap<>();
         return capture(resourcesCache, context, root, null);
     }
 
-    private NodeInfo capture(HashMap<String, Resources> resourcesCache, Context context, AccessibilityNodeInfo node, NodeInfo parent) {
+    private Node capture(HashMap<String, Resources> resourcesCache, Context context, AccessibilityNodeInfo node, Node parent) {
         String packageName = node.getPackageName().toString();
         // 这个resources暂时不知道可以干什么，直接从autojs里扣过来的
         Resources resources = null;
@@ -60,7 +60,7 @@ public class LayoutInspector {
             }
         }
         // 深度优先将界面节点重新包装一层构建成树形结构
-        NodeInfo nodeInfo = new NodeInfo(node, resources, parent, String.valueOf(count.getAndAdd(1)));
+        Node nodeInfo = new Node(node, resources, parent, String.valueOf(count.getAndAdd(1)));
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++) {
             AccessibilityNodeInfo child = node.getChild(i);

@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.core;
+package cn.chci.hmcs.automator.socket;
 
 import android.util.Log;
 

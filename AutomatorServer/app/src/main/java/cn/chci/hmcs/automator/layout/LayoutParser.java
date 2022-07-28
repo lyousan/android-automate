@@ -5,18 +5,23 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.List;
 
-public class NodeInfoParser {
+import cn.chci.hmcs.automator.model.Node;
+
+public class LayoutParser {
 
     /**
      * 将节点信息转换为字符串格式的xml
      *
-     * @param nodeInfo 节点信息
+     * @param node 节点信息
      * @return 字符串格式的xml
      */
-    public static String toXMLString(NodeInfo nodeInfo) {
+    public static String toXMLString(Node node) {
+        if (node == null) {
+            return "";
+        }
         StringBuilder result = new StringBuilder();
         result.append("<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>");
-        result.append(convertToXMLString(nodeInfo, result));
+        result.append(convertToXMLString(node, result));
         return result.toString();
     }
 
@@ -27,19 +32,19 @@ public class NodeInfoParser {
      * @param builder  用于字符串拼接
      * @return 返回传入节点的字符串XML格式
      */
-    private static String convertToXMLString(NodeInfo nodeInfo, StringBuilder builder) {
+    private static String convertToXMLString(Node nodeInfo, StringBuilder builder) {
         StringBuilder result = new StringBuilder();
         AccessibilityNodeInfo node = nodeInfo.getNode();
         CharSequence className = node.getClassName();
         result.append("<").append(className);
         // 填充节点的属性
         populateAttrs(nodeInfo, result);
-        List<NodeInfo> children = nodeInfo.getChildren();
+        List<Node> children = nodeInfo.getChildren();
         if (children.size() > 0) {
             // 存在子节点就继续递归转换
             result.append(">");
             StringBuilder childrenString = new StringBuilder();
-            for (NodeInfo child : children) {
+            for (Node child : children) {
                 childrenString.append(convertToXMLString(child, builder));
             }
             result.append(childrenString);
@@ -57,7 +62,7 @@ public class NodeInfoParser {
      * @param nodeInfo 节点信息
      * @param builder  字用于字符串拼接
      */
-    private static void populateAttrs(NodeInfo nodeInfo, StringBuilder builder) {
+    private static void populateAttrs(Node nodeInfo, StringBuilder builder) {
         Rect rect = new Rect();
         AccessibilityNodeInfo node = nodeInfo.getNode();
         node.getBoundsInScreen(rect);
