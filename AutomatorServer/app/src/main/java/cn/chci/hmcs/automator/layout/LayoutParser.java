@@ -34,9 +34,8 @@ public class LayoutParser {
      */
     private static String convertToXMLString(Node nodeInfo, StringBuilder builder) {
         StringBuilder result = new StringBuilder();
-        AccessibilityNodeInfo node = nodeInfo.getNode();
-        CharSequence className = node.getClassName();
-        result.append("<").append(className);
+        // 不用className作为tag的原因是因为有一些app自定义的className中存在一些诸如$之类的不符合Xml标签规范的字符，会导致解析出现异常
+        result.append("<node");
         // 填充节点的属性
         populateAttrs(nodeInfo, result);
         List<Node> children = nodeInfo.getChildren();
@@ -48,7 +47,7 @@ public class LayoutParser {
                 childrenString.append(convertToXMLString(child, builder));
             }
             result.append(childrenString);
-            result.append("</").append(className).append(">");
+            result.append("</node>");
         } else {
             // 没有子节点就直接封尾，用 <tag /> 这种形式，而不是 <tag></tag> 这种形式，前者更加节省空间
             result.append("/>");

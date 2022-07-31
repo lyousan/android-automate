@@ -4,6 +4,7 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
@@ -20,6 +21,7 @@ public class LayoutInspector {
     private static final String LOG_TAG = "hmcs-automator";
     private final Context mContext;
     private static final AtomicInteger count = new AtomicInteger(0);
+    public static Rect boundsInScreen;
 
     public LayoutInspector(Context mContext) {
         this.mContext = mContext;
@@ -36,6 +38,10 @@ public class LayoutInspector {
         if (root == null) {
             Log.d(LOG_TAG, "captureCurrentWindow: RootInActiveWindow is NULL");
             return null;
+        }
+        if (boundsInScreen == null) {
+            boundsInScreen = new Rect();
+            root.getBoundsInScreen(boundsInScreen);
         }
         return capture(mContext, root);
     }

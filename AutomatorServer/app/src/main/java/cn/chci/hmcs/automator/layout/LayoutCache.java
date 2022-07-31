@@ -52,6 +52,7 @@ public class LayoutCache {
     }
 
     public static String findCacheId(String xpath) {
+        refresh();
         org.dom4j.Node node = document.selectSingleNode(xpath);
         if (node == null) {
             refresh();
@@ -64,6 +65,7 @@ public class LayoutCache {
     }
 
     public static List<String> findCacheIds(String xpath) {
+        refresh();
         List<org.dom4j.Node> nodes = document.selectNodes(xpath);
         if (nodes.size() == 0) {
             refresh();

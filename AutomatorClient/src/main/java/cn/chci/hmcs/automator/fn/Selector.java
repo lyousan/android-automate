@@ -73,6 +73,31 @@ public class Selector extends Command implements ReceiveListener<Response> {
         return null;
     }
 
+    public Node findOne(By by, Boolean inScreen) {
+        Client client = ClientContextHolder.get(ThreadLocalContextHolder.getCurrentClientId());
+        Command command = new Command("Selector", "findOne", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
+        Request request = null;
+        try {
+            request = new Request();
+            request.setCommand(command);
+            ReceiveListenerContextHolder.register(request.getId(), this);
+            client.emit(request);
+            if (!cdl.await(WAIT_TIME, TimeUnit.SECONDS)) {
+                System.out.println("超时");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            if (request != null) {
+                ReceiveListenerContextHolder.remove(request.getId());
+            }
+        }
+        if (request != null) {
+            return NodeParser.parse(result.get(request.getId()).toString());
+        }
+        return null;
+    }
+
     public List<Node> find(By by) {
         Client client = ClientContextHolder.get(ThreadLocalContextHolder.getCurrentClientId());
         Command command = new Command("Selector", "find", new Class[]{By.class}, new Object[]{by});

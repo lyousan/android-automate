@@ -35,7 +35,7 @@ public class Executor {
                 result = method.invoke(target);
             }
             long end = System.currentTimeMillis();
-            Log.d(LOG_TAG, "command finished: " + command.getTargetName() + "-" + command.getMethodName() + ", spend time: " + (end - begin) + "ms");
+            Log.d(LOG_TAG, "command finished: " + command.getTargetName() + "-" + command.getMethodName() + ", take " + (end - begin) + "ms");
             Log.d(LOG_TAG, "command result: " + result.toString());
             return Response.success("执行成功", result);
         } catch (Exception e) {

@@ -11,7 +11,6 @@ import cn.chci.hmcs.automator.socket.Client;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.List;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
@@ -24,19 +23,45 @@ import java.util.UUID;
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         init();
-        String dump = new Dump().dump();
-        System.out.println("dump: " + dump);
+//        long begin = System.currentTimeMillis();
+//        String dump = new Dump().dump();
+//        System.out.println("dump: " + dump);
+//        long end = System.currentTimeMillis();
+//        System.out.println("take " + (end - begin) + "ms");
 
 //        String findOne = new Selector().findOne(By.xpath("//*[not(@text=\"\")]"));
-        Node findOne = new Selector().findOne(By.id("com.tencent.mm:id/g5g"));
-        System.out.println("findOne: " + findOne);
+//        Node findOne = new Selector().findOne(By.id("com.tencent.mm:id/g5g"));
+//        System.out.println("findOne: " + findOne);
 
-        List<Node> find = new Selector().find(By.className("android.widget.TextView"));
-        System.out.println("find: " + find);
-        find.forEach(node -> System.out.println(node.getText()));
+//        List<Node> find = new Selector().find(By.className("android.widget.TextView"));
+//        System.out.println("find: " + find);
+//        find.forEach(node -> System.out.println(node.getText()));
         Scanner scanner = new Scanner(System.in);
-        scanner.next();
+        String cmd = null;
+        while ((cmd = scanner.next()) != null && !"exit".equalsIgnoreCase(cmd)) {
+            if ("dump".equalsIgnoreCase(cmd)) {
+                dump();
+            } else if (cmd.contains("findOne")) {
+                findOne(cmd.split("==")[1], Boolean.parseBoolean(cmd.split("==")[2]));
+            }
+        }
         System.exit(0);
+    }
+
+    private static void dump() {
+        long begin = System.currentTimeMillis();
+        String dump = new Dump().dump();
+        System.out.println("dump: " + dump);
+        long end = System.currentTimeMillis();
+        System.out.println("take " + (end - begin) + "ms");
+    }
+
+    private static void findOne(String xpath, boolean inScreen) {
+        long begin = System.currentTimeMillis();
+        Node findOne = new Selector().findOne(By.xpath(xpath), inScreen);
+        System.out.println("findOne.getText: " + findOne.getText());
+        long end = System.currentTimeMillis();
+        System.out.println("take " + (end - begin) + "ms");
     }
 
     private static void init() throws IOException, InterruptedException {

@@ -38,7 +38,7 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         // TODO 监听一些事件，暂时没啥用，因为我们才是主动调用方
-        Log.i(LOG_TAG, "onAccessibilityEvent: 接收到事件");
+//        Log.i(LOG_TAG, "onAccessibilityEvent: 接收到事件");
         switch (event.getEventType()) {
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
             case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
@@ -46,7 +46,7 @@ public class MyAccessibilityService extends AccessibilityService {
             case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
             case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
-                if (!isCapturing) {
+                /*if (!isCapturing) {
                     synchronized (this) {
                         if (!isCapturing) {
                             isCapturing = true;
@@ -60,7 +60,7 @@ public class MyAccessibilityService extends AccessibilityService {
                             isCapturing = false;
                         }
                     }
-                }
+                }*/
         }
 
     }

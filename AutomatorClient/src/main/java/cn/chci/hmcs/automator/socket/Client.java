@@ -22,6 +22,10 @@ public class Client {
     final PipedOutputStream pipedOut = new PipedOutputStream();
 
     public void start(String udid) throws IOException, InterruptedException {
+        // 启动app
+        exec("adb -s " + udid + " shell am start cn.chci.hmcs.automator/.MainActivity");
+        // 回退app
+        exec("adb -s " + udid + " shell input keyevent 4");
         // 提权获取无障碍权限（有可能显示已开启，但是不起作用，安卓系统的bug，需要重启）
         exec("adb -s " + udid + " shell pm grant cn.chci.hmcs.automator android.permission.WRITE_SECURE_SETTINGS");
         // 端口转发

@@ -87,7 +87,7 @@ public class Server {
                 NodeInfo one = LayoutCache.findOne(commandName);
                 msg = NodeInfoParser.toXMLString(one);
             }*/
-            Log.d(LOG_TAG, "send msg: " + msg);
+//            Log.d(LOG_TAG, "send msg: " + msg);
             byte[] compressed = SocketWriteHandler.compress(msg.getBytes(StandardCharsets.UTF_8));
             PipedOutputStream pipedOutputStream = PIPE_OUT.get(id);
             // 前八个字节表示内容的长度
