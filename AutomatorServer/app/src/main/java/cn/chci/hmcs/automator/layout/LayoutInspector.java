@@ -66,7 +66,7 @@ public class LayoutInspector {
             }
         }
         // 深度优先将界面节点重新包装一层构建成树形结构
-        Node nodeInfo = new Node(node, resources, parent, String.valueOf(count.getAndAdd(1)));
+        Node nodeInfo = new Node(node, resources, parent, String.valueOf(node.hashCode()));
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++) {
             AccessibilityNodeInfo child = node.getChild(i);

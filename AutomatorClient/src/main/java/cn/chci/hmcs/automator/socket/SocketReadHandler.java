@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automator.socket;
 
-import cn.chci.hmcs.automator.core.ReceiveListenerContextHolder;
+import cn.chci.hmcs.automator.core.ResponseListenerContextHolder;
 import cn.chci.hmcs.automator.dto.Response;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
@@ -74,7 +74,7 @@ public class SocketReadHandler implements Runnable {
                 Response response = JSON.parseObject(msg, Response.class);
                 msg = JSON.toJSONString(response, JSONWriter.Feature.PrettyFormat);
                 System.out.println("收到服务端消息:  " + msg + " ");
-                ReceiveListenerContextHolder.trigger(response.getRequestId(), response);
+                ResponseListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -1,16 +1,14 @@
 package cn.chci.hmcs.automator.fn;
 
 import android.graphics.Rect;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import cn.chci.hmcs.automator.layout.LayoutCache;
 import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.layout.LayoutParser;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
-import cn.chci.hmcs.automator.layout.LayoutParser;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class Selector extends Command {
 
@@ -22,7 +20,7 @@ public class Selector extends Command {
         List<Node> nodes = LayoutCache.find(by.xpath);
         Node result = null;
         if (inScreen) {
-            result = nodes.stream().filter(this::isInScreen).findFirst().get();
+            result = nodes.stream().filter(this::isInScreen).findFirst().orElse(null);
         } else {
             result = LayoutCache.findOne(by.xpath);
         }

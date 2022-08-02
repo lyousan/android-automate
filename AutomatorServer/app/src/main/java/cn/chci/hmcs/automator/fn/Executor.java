@@ -2,23 +2,25 @@ package cn.chci.hmcs.automator.fn;
 
 import android.util.Log;
 
-import com.alibaba.fastjson2.JSON;
+import cn.chci.hmcs.automator.dto.Response;
+import cn.chci.hmcs.automator.exception.CustomException;
+import cn.chci.hmcs.automator.model.Command;
+
 import com.alibaba.fastjson2.JSONObject;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Set;
-
-import cn.chci.hmcs.automator.dto.Response;
-import cn.chci.hmcs.automator.model.Command;
 
 public class Executor {
     private static final String LOG_TAG = "hmcs-automator-Executor";
 
     public static Response execute(Command command) {
         try {
-            // 经过json反序列化后会丢失一些类型信息，需要根据paramsType对params进行转换
+            // 经过json反序列化后会丢失一些原始信息，需要根据paramsType对params进行转换
             convertParams(command);
             /*if (!) {
                 return Response.clientFail("参数错误");
@@ -36,11 +38,18 @@ public class Executor {
             }
             long end = System.currentTimeMillis();
             Log.d(LOG_TAG, "command finished: " + command.getTargetName() + "-" + command.getMethodName() + ", take " + (end - begin) + "ms");
-            Log.d(LOG_TAG, "command result: " + result.toString());
+            Log.d(LOG_TAG, "command result: " + (result == null ? "none return" : result.toString()));
             return Response.success("执行成功", result);
         } catch (Exception e) {
             Log.e(LOG_TAG, "execute error: ", e);
-            return Response.serverFail("执行失败: " + e.getMessage());
+            StringWriter stringWriter = new StringWriter();
+            e.printStackTrace(new PrintWriter(stringWriter, true));
+            if (e.getCause() instanceof CustomException) {
+                // 如果是内置的异常，进行不同的包装返回
+                CustomException ce = ((CustomException) e.getCause());
+                return new Response(ce.getCode(), ce.getDescription(), stringWriter.toString());
+            }
+            return Response.serverFail("执行失败", stringWriter.toString());
         }
     }
 

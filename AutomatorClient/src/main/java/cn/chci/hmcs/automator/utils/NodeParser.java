@@ -70,6 +70,7 @@ public class NodeParser {
         node.setPassword("true".equalsIgnoreCase(element.attributeValue("password")));
         node.setSelected("true".equalsIgnoreCase(element.attributeValue("selected")));
         node.setRect(bounds2Rect(element.attributeValue("bounds")));
+        node.setCacheId(element.attributeValue("cacheId"));
         return node;
     }
 

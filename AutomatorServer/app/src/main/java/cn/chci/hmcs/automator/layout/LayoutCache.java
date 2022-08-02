@@ -17,15 +17,30 @@ import cn.chci.hmcs.automator.utils.StringUtils;
 
 // TODO 界面元素的缓存
 public class LayoutCache {
-    public static Document document;
+    /**
+     * 缓存真实节点/缓存节点
+     */
     public static Node root;
+    /**
+     * 虚拟节点，由真实节点转字符串格式的xml，再通过dom4j转换
+     */
+    public static Document document;
     private static final SAXReader reader = new SAXReader();
 
+    /**
+     * 直接使用 {@link #refresh()}显然更方便
+     *
+     * @param xml
+     * @param root
+     * @throws DocumentException
+     */
+    @Deprecated
     public static void save(String xml, Node root) throws DocumentException {
         document = reader.read(new ByteArrayInputStream(xml.getBytes()));
         LayoutCache.root = root;
     }
 
+    @Deprecated
     private static void init() {
         if (document == null || root == null) {
             root = LayoutInspectorGetter.getInstance().captureCurrentWindow();
@@ -37,7 +52,10 @@ public class LayoutCache {
         }
     }
 
-    private synchronized static void refresh() {
+    /**
+     * 刷新缓存节点和虚拟节点
+     */
+    public synchronized static void refresh() {
         root = LayoutInspectorGetter.getInstance().captureCurrentWindow();
         try {
             document = reader.read(new ByteArrayInputStream(LayoutParser.toXMLString(root).getBytes()));
@@ -102,7 +120,7 @@ public class LayoutCache {
     }
 
     private static void searchInTreeByDeep(Node root, Predicate<Node> filter, List<Node> data, boolean lazy) {
-        // 惰性查找，开启lazy模式时将只只查找第一个满足条件的节点
+        // 惰性查找，开启lazy模式时将只查找第一个满足条件的节点
         if (lazy && data.size() > 0) {
             return;
         }

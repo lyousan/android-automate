@@ -2,6 +2,7 @@ package cn.chci.hmcs.automator;
 
 import cn.chci.hmcs.automator.core.ClientContextHolder;
 import cn.chci.hmcs.automator.core.ThreadLocalContextHolder;
+import cn.chci.hmcs.automator.fn.Actions;
 import cn.chci.hmcs.automator.fn.By;
 import cn.chci.hmcs.automator.fn.Dump;
 import cn.chci.hmcs.automator.fn.Selector;
@@ -42,7 +43,10 @@ public class Main {
             if ("dump".equalsIgnoreCase(cmd)) {
                 dump();
             } else if (cmd.contains("findOne")) {
-                findOne(cmd.split("==")[1], Boolean.parseBoolean(cmd.split("==")[2]));
+                Node node = findOne(cmd.split("==")[1], Boolean.parseBoolean(cmd.split("==")[2]));
+                new Actions().click(node);
+                new Actions().input(node, "hello");
+                System.out.println("123");
             }
         }
         System.exit(0);
@@ -56,12 +60,17 @@ public class Main {
         System.out.println("take " + (end - begin) + "ms");
     }
 
-    private static void findOne(String xpath, boolean inScreen) {
+    private static Node findOne(String xpath, boolean inScreen) {
         long begin = System.currentTimeMillis();
         Node findOne = new Selector().findOne(By.xpath(xpath), inScreen);
-        System.out.println("findOne.getText: " + findOne.getText());
+        if (findOne != null) {
+            System.out.println("findOne.getText: " + findOne.getText());
+        } else {
+            System.out.println("There are no such node in current window");
+        }
         long end = System.currentTimeMillis();
         System.out.println("take " + (end - begin) + "ms");
+        return findOne;
     }
 
     private static void init() throws IOException, InterruptedException {

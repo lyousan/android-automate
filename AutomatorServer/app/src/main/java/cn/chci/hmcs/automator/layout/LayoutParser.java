@@ -16,12 +16,33 @@ public class LayoutParser {
      * @return 字符串格式的xml
      */
     public static String toXMLString(Node node) {
+        return toXMLString(node, true);
+    }
+
+    /**
+     * 将节点信息转换为字符串格式的xml
+     *
+     * @param node 节点信息
+     * @param full 是否完整，为true会递归转换所有节点，为false则只转换当前节点本身
+     * @return 字符串格式的xml
+     */
+    public static String toXMLString(Node node, boolean full) {
         if (node == null) {
             return "";
         }
-        StringBuilder result = new StringBuilder();
-        result.append("<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>");
-        result.append(convertToXMLString(node, result));
+        if (full) {
+            StringBuilder result = new StringBuilder();
+            result.append("<?xml version='1.0' encoding='UTF-8' standalone='yes' ?>");
+            result.append(convertToXMLString(node, result));
+            return result.toString();
+        }
+        return convertSingleToXMLString(node);
+    }
+
+    private static String convertSingleToXMLString(Node nodeInfo) {
+        StringBuilder result = new StringBuilder("<node");
+        populateAttrs(nodeInfo, result);
+        result.append("/>");
         return result.toString();
     }
 
@@ -65,10 +86,10 @@ public class LayoutParser {
         Rect rect = new Rect();
         AccessibilityNodeInfo node = nodeInfo.getNode();
         node.getBoundsInScreen(rect);
-        builder.append(" ").append("resource-id=\"").append(node.getViewIdResourceName() == null ? "" : node.getViewIdResourceName()).append("\"")
-                .append(" ").append("class=\"").append(node.getClassName()).append("\"")
-                .append(" ").append("text=\"").append(node.getText() == null ? "" : node.getText()).append("\"")
-                .append(" ").append("content-desc=\"").append(node.getContentDescription() == null ? "" : node.getContentDescription()).append("\"")
+        builder.append(" ").append("resource-id=\"").append(node.getViewIdResourceName() == null ? "" : replaceInvalidCharacter(node.getViewIdResourceName())).append("\"")
+                .append(" ").append("class=\"").append(replaceInvalidCharacter(node.getClassName().toString())).append("\"")
+                .append(" ").append("text=\"").append(node.getText() == null ? "" : replaceInvalidCharacter(node.getText().toString())).append("\"")
+                .append(" ").append("content-desc=\"").append(node.getContentDescription() == null ? "" : replaceInvalidCharacter(node.getContentDescription().toString())).append("\"")
                 .append(" ").append("checkable=\"").append(node.isCheckable()).append("\"")
                 .append(" ").append("checked=\"").append(node.isChecked()).append("\"")
                 .append(" ").append("clickable=\"").append(node.isClickable()).append("\"")
@@ -82,5 +103,13 @@ public class LayoutParser {
                 .append(" ").append("bounds=\"").append(rect.toShortString()).append("\"")
                 // 注意：这个cacheId并不是原生存在的，是用来辅助服务端实现xpath定位能力的，用来跟真实节点关联的，不能用于xpath表达式中
                 .append(" ").append("cacheId=\"").append(nodeInfo.getCacheId()).append("\"");
+    }
+
+    private static String replaceInvalidCharacter(String content) {
+        return content.replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;")
+                .replaceAll("&", "&amp;")
+                .replaceAll("\"", "&quot;")
+                .replaceAll("'", "&apos;");
     }
 }
