@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator;
+package cn.chci.hmcs.automator.utils;
 
 import java.util.HashMap;
 import java.util.Map;

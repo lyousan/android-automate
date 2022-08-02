@@ -9,7 +9,15 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
+import org.dom4j.DocumentException;
+
 import java.util.List;
+
+import cn.chci.hmcs.automator.layout.LayoutCache;
+import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.model.Node;
+import cn.chci.hmcs.automator.layout.LayoutParser;
+import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {
     private static final String LOG_TAG = "hmcs-automator";
@@ -30,25 +38,31 @@ public class MyAccessibilityService extends AccessibilityService {
     @Override
     public void onAccessibilityEvent(AccessibilityEvent event) {
         // TODO 监听一些事件，暂时没啥用，因为我们才是主动调用方
-        Log.i(LOG_TAG, "onAccessibilityEvent: 接收到事件");
+//        Log.i(LOG_TAG, "onAccessibilityEvent: 接收到事件");
         switch (event.getEventType()) {
             case AccessibilityEvent.TYPE_VIEW_CLICKED:
             case AccessibilityEvent.TYPE_VIEW_LONG_CLICKED:
                 break;
+            case AccessibilityEvent.TYPE_VIEW_TEXT_CHANGED:
             case AccessibilityEvent.TYPE_WINDOWS_CHANGED:
+            case AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED:
+                /*if (!isCapturing) {
+                    synchronized (this) {
+                        if (!isCapturing) {
+                            isCapturing = true;
+                            Node node = layoutInspector.captureCurrentWindow();
+                            String xmlString = LayoutParser.toXMLString(node);
+                            try {
+                                LayoutCache.save(xmlString, node);
+                            } catch (DocumentException e) {
+                                e.printStackTrace();
+                            }
+                            isCapturing = false;
+                        }
+                    }
+                }*/
         }
-        // 测试代码，这个地方不能这么搞，一直获取会崩的
-        if (!isCapturing) {
-            synchronized (this) {
-                if (!isCapturing) {
-                    isCapturing = true;
-//                    NodeInfo nodeInfo = layoutInspector.captureCurrentWindow();
-//                    String xmlString = NodeInfoParser.toXMLString(nodeInfo);
-//                    Log.d(LOG_TAG, "onAccessibilityEvent: " + xmlString);
-                    isCapturing = false;
-                }
-            }
-        }
+
     }
 
     @Override
