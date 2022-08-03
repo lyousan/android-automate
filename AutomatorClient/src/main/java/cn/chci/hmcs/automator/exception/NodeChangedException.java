@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automator.exception;
 
-public class NodeChangedException extends CustomException {
+public class NodeChangedException extends AutomatorException {
     public NodeChangedException() {
         super();
         code = 502;

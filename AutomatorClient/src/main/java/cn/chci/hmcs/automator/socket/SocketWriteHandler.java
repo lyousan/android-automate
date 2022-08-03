@@ -1,5 +1,7 @@
 package cn.chci.hmcs.automator.socket;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -8,6 +10,7 @@ import java.net.Socket;
  * @Date 2022-07-23 14:19
  * @Description
  **/
+@Slf4j
 public class SocketWriteHandler implements Runnable {
     private final Client client;
     private final Socket socket;
@@ -28,8 +31,8 @@ public class SocketWriteHandler implements Runnable {
                 writer.newLine();
                 writer.flush();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            log.error("socket写入线程发生异常", e);
         }
     }
 }

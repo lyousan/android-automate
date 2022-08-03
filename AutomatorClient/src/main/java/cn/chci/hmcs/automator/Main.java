@@ -1,7 +1,6 @@
+/*
 package cn.chci.hmcs.automator;
 
-import cn.chci.hmcs.automator.core.ClientContextHolder;
-import cn.chci.hmcs.automator.core.ThreadLocalContextHolder;
 import cn.chci.hmcs.automator.fn.Actions;
 import cn.chci.hmcs.automator.fn.By;
 import cn.chci.hmcs.automator.fn.Dump;
@@ -16,11 +15,13 @@ import java.util.Properties;
 import java.util.Scanner;
 import java.util.UUID;
 
+*/
 /**
  * @Author 有三
  * @Date 2022-07-23 13:12
  * @Description
- **/
+ **//*
+
 public class Main {
     public static void main(String[] args) throws IOException, InterruptedException {
         init();
@@ -83,3 +84,4 @@ public class Main {
         ClientContextHolder.put(clientId, client);
     }
 }
+*/

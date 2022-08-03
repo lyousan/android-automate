@@ -27,38 +27,42 @@ public class NodeParser {
         try {
             Document doc = XML_READER.read(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
             Element root = doc.getRootElement();
-            node = doParse(root);
-            parse(root, node, true);
+            node = parse(root, null, true);
         } catch (DocumentException e) {
             e.printStackTrace();
         }
         return node;
     }
 
-    private static void parse(Element element, Node parent, boolean isRoot) {
+    private static Node parse(Element element, Node parent, boolean isRoot) {
         Node node = doParse(element);
         if (!isRoot) {
             node.setParent(parent);
         }
         Iterator<Element> iterator = element.elementIterator();
         if (iterator.hasNext()) {
+            Node tmp;
             while (iterator.hasNext()) {
                 Element child = iterator.next();
-                parse(child, node, false);
+                tmp = parse(child, node, false);
+                if (!node.getChildren().contains(tmp)) {
+                    node.getChildren().add(tmp);
+                }
             }
         } else {
             if (!isRoot) {
                 parent.getChildren().add(node);
             }
         }
+        return node;
     }
 
     private static Node doParse(Element element) {
         Node node = new Node();
         node.setId(element.attributeValue("resource-id"));
-        node.setClassName(element.attributeValue("className"));
+        node.setClassName(element.attributeValue("class"));
         node.setText(element.attributeValue("text"));
-        node.setContentDesc(element.attributeValue("contentDesc"));
+        node.setContentDesc(element.attributeValue("content-desc"));
         node.setCheckable("true".equalsIgnoreCase(element.attributeValue("checkable")));
         node.setChecked("true".equalsIgnoreCase(element.attributeValue("checked")));
         node.setClickable("true".equalsIgnoreCase(element.attributeValue("clickable")));
@@ -66,7 +70,7 @@ public class NodeParser {
         node.setFocusable("true".equalsIgnoreCase(element.attributeValue("focusable")));
         node.setFocused("true".equalsIgnoreCase(element.attributeValue("focused")));
         node.setScrollable("true".equalsIgnoreCase(element.attributeValue("scrollable")));
-        node.setLongClickable("true".equalsIgnoreCase(element.attributeValue("longClickable")));
+        node.setLongClickable("true".equalsIgnoreCase(element.attributeValue("long-clickable")));
         node.setPassword("true".equalsIgnoreCase(element.attributeValue("password")));
         node.setSelected("true".equalsIgnoreCase(element.attributeValue("selected")));
         node.setRect(bounds2Rect(element.attributeValue("bounds")));

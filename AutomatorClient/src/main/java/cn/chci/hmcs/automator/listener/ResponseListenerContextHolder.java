@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.core;
+package cn.chci.hmcs.automator.listener;
 
 import cn.chci.hmcs.automator.dto.Response;
 
@@ -17,7 +17,10 @@ public class ResponseListenerContextHolder {
         if (LISTENERS.size() == 0) {
             return;
         }
-        LISTENERS.get(requestId).onReceive(content);
+        ResponseListener<Response> responseListener = LISTENERS.get(requestId);
+        if (responseListener != null) {
+            responseListener.onReceive(content);
+        }
     }
 
     public static void trigger(Response content) {

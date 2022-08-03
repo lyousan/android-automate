@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.handler;
 
 import cn.chci.hmcs.automator.dto.Response;
 

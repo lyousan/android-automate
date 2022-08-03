@@ -1,9 +1,10 @@
 package cn.chci.hmcs.automator.socket;
 
-import cn.chci.hmcs.automator.core.ResponseListenerContextHolder;
+import cn.chci.hmcs.automator.listener.ResponseListenerContextHolder;
 import cn.chci.hmcs.automator.dto.Response;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -17,6 +18,7 @@ import java.util.zip.GZIPInputStream;
  * @Date 2022-07-23 14:24
  * @Description
  **/
+@Slf4j
 public class SocketReadHandler implements Runnable {
     private final Socket socket;
     private final Client client;
@@ -65,7 +67,6 @@ public class SocketReadHandler implements Runnable {
                         System.arraycopy(buffer, 0, tmp, 0, len);
                         decompressData = mergeArray(decompressData, tmp);
                     }
-//                    System.out.println("len: " + len + ", chunk: " + Arrays.toString(buffer));
                     i += len;
                 }
                 // 解压字节数组，转成字符串使用即可
@@ -73,11 +74,11 @@ public class SocketReadHandler implements Runnable {
                 String msg = new String(decompressData);
                 Response response = JSON.parseObject(msg, Response.class);
                 msg = JSON.toJSONString(response, JSONWriter.Feature.PrettyFormat);
-                System.out.println("收到服务端消息:  " + msg + " ");
+                log.debug("received response: {}", msg);
                 ResponseListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("socket读取线程发生异常", e);
         }
     }
 

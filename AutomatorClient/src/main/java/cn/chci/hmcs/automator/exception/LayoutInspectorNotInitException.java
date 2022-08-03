@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automator.exception;
 
-public class LayoutInspectorNotInitException extends CustomException {
+public class LayoutInspectorNotInitException extends AutomatorException {
 
     public LayoutInspectorNotInitException() {
         super();
