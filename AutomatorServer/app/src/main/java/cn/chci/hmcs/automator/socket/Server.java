@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.chci.hmcs.automator.dto.Request;
 import cn.chci.hmcs.automator.dto.Response;
-import cn.chci.hmcs.automator.fn.Executor;
+import cn.chci.hmcs.automator.accessibility.fn.Executor;
 
 public class Server {
     private static final String LOG_TAG = "hmcs-automator";

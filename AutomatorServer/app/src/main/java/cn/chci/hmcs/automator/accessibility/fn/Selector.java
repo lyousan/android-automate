@@ -1,11 +1,10 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
 import android.graphics.Rect;
 
-import cn.chci.hmcs.automator.accessibiliy.device.DisplayDevice;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutInspector;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
+import cn.chci.hmcs.automator.accessibility.device.DisplayDevice;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutCache;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutParser;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
 import cn.chci.hmcs.automator.utils.BeanContextHolder;

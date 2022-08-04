@@ -1,9 +1,9 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutInspector;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutInspector;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutParser;
 import cn.chci.hmcs.automator.utils.LayoutInspectorGetter;
 
 public class Dump extends Command {

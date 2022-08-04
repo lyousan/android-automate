@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import cn.chci.hmcs.automator.accessibiliy.device.DisplayDevice;
+import cn.chci.hmcs.automator.accessibility.device.DisplayDevice;
 import cn.chci.hmcs.automator.socket.Server;
 import cn.chci.hmcs.automator.utils.BeanContextHolder;
 

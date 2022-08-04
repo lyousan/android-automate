@@ -11,9 +11,7 @@ import android.view.accessibility.AccessibilityEvent;
 
 import java.util.List;
 
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutInspector;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutInspector;
 import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {

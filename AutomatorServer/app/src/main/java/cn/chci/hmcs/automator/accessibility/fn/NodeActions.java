@@ -1,11 +1,13 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
 import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.util.function.Predicate;
+
 import cn.chci.hmcs.automator.exception.NodeChangedException;
 import cn.chci.hmcs.automator.exception.NodeInoperableException;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutCache;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
 
@@ -20,8 +22,9 @@ public class NodeActions extends Command {
         if (node == null || !node.getCacheId().equals(cacheId)) {
             throw new NodeChangedException("该节点或许已经发生变化了");
         }
-        if (!node.getNode().isClickable()) {
-            throw new NodeInoperableException("该节点不可执行此操作 ==> click");
+        node = bubbleFind(node, n -> n.getNode().isClickable());
+        if (node == null) {
+            throw new NodeInoperableException("找不到可以执行此操作的节点 ==> click");
         }
         return node.getNode().performAction(AccessibilityNodeInfo.ACTION_CLICK);
     }
@@ -31,8 +34,9 @@ public class NodeActions extends Command {
         if (node == null || !node.getCacheId().equals(cacheId)) {
             throw new NodeChangedException("该节点或许已经发生变化了");
         }
-        if (!node.getNode().isLongClickable()) {
-            throw new NodeInoperableException("该节点不可执行此操作 ==> longClick");
+        node = bubbleFind(node, n -> n.getNode().isLongClickable());
+        if (node == null) {
+            throw new NodeInoperableException("找不到可以执行此操作的节点 ==> longClick");
         }
         return node.getNode().performAction(AccessibilityNodeInfo.ACTION_LONG_CLICK);
     }
@@ -42,12 +46,23 @@ public class NodeActions extends Command {
         if (node == null || !node.getCacheId().equals(cacheId)) {
             throw new NodeChangedException("该节点或许已经发生变化了");
         }
-        if (!node.getNode().isEditable()) {
-            throw new NodeInoperableException("该节点不可执行此操作 ==> edit");
+        node = bubbleFind(node, n -> n.getNode().isEditable());
+        if (node == null) {
+            throw new NodeInoperableException("找不到可以执行此操作的节点 ==> edit");
         }
         Bundle bundle = new Bundle();
         bundle.putCharSequence(AccessibilityNodeInfo.ACTION_ARGUMENT_SET_TEXT_CHARSEQUENCE, text);
         return node.getNode().performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle);
+    }
+
+    private Node bubbleFind(Node node, Predicate<Node> predicate) {
+        if (node == null) {
+            return null;
+        }
+        if (predicate.test(node)) {
+            return node;
+        }
+        return bubbleFind(node.getParent(), predicate);
     }
 
 }

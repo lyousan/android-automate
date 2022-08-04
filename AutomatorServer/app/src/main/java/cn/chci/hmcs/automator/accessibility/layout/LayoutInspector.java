@@ -1,10 +1,9 @@
-package cn.chci.hmcs.automator.accessibiliy.layout;
+package cn.chci.hmcs.automator.accessibility.layout;
 
 import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Rect;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 

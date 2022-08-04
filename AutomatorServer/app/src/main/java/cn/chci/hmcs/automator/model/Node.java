@@ -7,9 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
-import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
-
 /**
  * 对界面节点信息的包装，便于遍历、转换
  */

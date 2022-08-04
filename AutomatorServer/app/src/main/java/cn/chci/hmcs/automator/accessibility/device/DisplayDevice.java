@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.accessibiliy.device;
+package cn.chci.hmcs.automator.accessibility.device;
 
 import android.app.Activity;
 import android.graphics.Rect;

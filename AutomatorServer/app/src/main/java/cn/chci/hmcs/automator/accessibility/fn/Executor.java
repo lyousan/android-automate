@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
 import android.util.Log;
 
@@ -80,7 +80,7 @@ public class Executor {
     }
 
     private static Object obtainTarget(String clazzName) throws ClassNotFoundException, InstantiationException, IllegalAccessException {
-        return Class.forName("cn.chci.hmcs.automator.fn." + clazzName).newInstance();
+        return Class.forName("cn.chci.hmcs.automator.accessibility.fn." + clazzName).newInstance();
     }
 
     private static Method obtainMethod(Object target, Command command) throws NoSuchMethodException {

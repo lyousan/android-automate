@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.accessibiliy.layout;
+package cn.chci.hmcs.automator.accessibility.layout;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
