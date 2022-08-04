@@ -33,7 +33,7 @@ public class Client {
         AdbUtils.exec("adb -s " + udid + " shell am start cn.chci.hmcs.automator/.MainActivity");
         // 回退app
         AdbUtils.exec("adb -s " + udid + " shell input keyevent 4");
-        Thread.sleep(3000);
+//        Thread.sleep(3000);
         Socket server = new Socket("127.0.0.1", 33579);
         pipedOut.connect(pipedIn);
         log.info("连接已建立......");

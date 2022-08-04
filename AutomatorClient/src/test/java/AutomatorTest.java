@@ -23,7 +23,7 @@ public class AutomatorTest {
     @BeforeEach
     void init() throws IOException, InterruptedException {
         // 退回桌面
-        AdbUtils.exec("adb -s 5EN0219529000872 shell input keyevent 3");
+        AdbUtils.exec("adb -s MDX0220427011762 shell input keyevent 3");
         bot = AndroidBot.createAndroidBotAndConnect("MDX0220427011762");
     }
 
@@ -52,17 +52,17 @@ public class AutomatorTest {
     @Test
     void testClick() {
         // 桌面
-        Node node = bot.findOne(By.contentDesc("微信"), false);
+        Node node = bot.findOne(By.textEquals("微信"), false);
         log.info("node.rect: {}", node.getRect());
-        bot.nodeActions().click(node);
+        node.click();
     }
 
     @Test
     void testLongClick() {
         // 桌面
-        Node node = bot.findOne(By.contentDesc("微信"), false);
+        Node node = bot.findOne(By.textEquals("微信"), false);
         log.info("node.rect: {}", node.getRect());
-        bot.nodeActions().longClick(node);
+        node.longClick();
     }
 
     @Test
@@ -71,7 +71,7 @@ public class AutomatorTest {
         // 微信登录
         Node node = bot.findOne(By.id("com.tencent.mm:id/cd7"));
         log.info("node.text: {}", node.getText());
-        bot.nodeActions().input(node, "Hello World");
+        node.input("Hello World");
         node = bot.findOne(By.id("com.tencent.mm:id/cd7"));
         log.info("node.text: {}", node.getText());
     }

@@ -26,7 +26,7 @@ public class Selector extends AbstractCommand<Response> {
         if (response == null) {
             return null;
         }
-        return NodeParser.parse(response.getData().toString());
+        return NodeParser.parse(response.getData().toString(),client);
     }
 
     public List<Node> find(Client client, By by) {
@@ -41,7 +41,7 @@ public class Selector extends AbstractCommand<Response> {
         Response response = send(client, request);
         if (response != null && response.getData() instanceof List) {
             for (Object s : ((List<?>) response.getData())) {
-                nodes.add(NodeParser.parse(s.toString()));
+                nodes.add(NodeParser.parse(s.toString(),client));
             }
         }
         return nodes;

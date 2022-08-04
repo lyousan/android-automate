@@ -1,6 +1,7 @@
 package cn.chci.hmcs.automator.utils;
 
 import cn.chci.hmcs.automator.model.Node;
+import cn.chci.hmcs.automator.socket.Client;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -20,6 +21,10 @@ public class NodeParser {
     private static final SAXReader XML_READER = new SAXReader();
 
     public static Node parse(String xml) {
+        return parse(xml, null);
+    }
+
+    public static Node parse(String xml, Client client) {
         if (StringUtils.isEmpty(xml)) {
             return null;
         }
@@ -27,15 +32,16 @@ public class NodeParser {
         try {
             Document doc = XML_READER.read(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
             Element root = doc.getRootElement();
-            node = parse(root, null, true);
+            node = parse(root, null, client, true);
         } catch (DocumentException e) {
             e.printStackTrace();
         }
         return node;
     }
 
-    private static Node parse(Element element, Node parent, boolean isRoot) {
+    private static Node parse(Element element, Node parent, Client client, boolean isRoot) {
         Node node = doParse(element);
+        node.setClient(client);
         if (!isRoot) {
             node.setParent(parent);
         }
@@ -44,7 +50,7 @@ public class NodeParser {
             Node tmp;
             while (iterator.hasNext()) {
                 Element child = iterator.next();
-                tmp = parse(child, node, false);
+                tmp = parse(child, node, client, false);
                 if (!node.getChildren().contains(tmp)) {
                     node.getChildren().add(tmp);
                 }

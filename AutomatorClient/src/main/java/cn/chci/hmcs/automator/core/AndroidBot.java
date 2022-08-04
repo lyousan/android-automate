@@ -2,7 +2,6 @@ package cn.chci.hmcs.automator.core;
 
 import cn.chci.hmcs.automator.fn.By;
 import cn.chci.hmcs.automator.fn.Dump;
-import cn.chci.hmcs.automator.fn.NodeActions;
 import cn.chci.hmcs.automator.fn.Selector;
 import cn.chci.hmcs.automator.model.Node;
 import cn.chci.hmcs.automator.socket.Client;
@@ -66,39 +65,5 @@ public class AndroidBot {
         }
         return selector.find(client, by, inScreen);
     }
-
-    public NodeActionsWrapper nodeActions() {
-        return new NodeActionsWrapper();
-    }
-
-    public class NodeActionsWrapper {
-        private final NodeActions nodeActions;
-
-        public NodeActionsWrapper() {
-            this.nodeActions = new NodeActions();
-        }
-
-        public boolean click(Node node) {
-            if (node == null) {
-                return false;
-            }
-            return nodeActions.click(client, node);
-        }
-
-        public boolean longClick(Node node) {
-            if (node == null) {
-                return false;
-            }
-            return nodeActions.longClick(client, node);
-        }
-
-        public boolean input(Node node, String text) {
-            if (node == null) {
-                return false;
-            }
-            return nodeActions.input(client, node, text);
-        }
-    }
-
 
 }
