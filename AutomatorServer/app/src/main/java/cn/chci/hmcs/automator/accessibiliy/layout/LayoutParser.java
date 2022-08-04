@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.layout;
+package cn.chci.hmcs.automator.accessibiliy.layout;
 
 import android.graphics.Rect;
 import android.view.accessibility.AccessibilityNodeInfo;

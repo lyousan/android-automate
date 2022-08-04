@@ -5,6 +5,7 @@ import cn.chci.hmcs.automator.dto.Response;
 import cn.chci.hmcs.automator.exception.AutomatorException;
 import cn.chci.hmcs.automator.exception.ClientException;
 import cn.chci.hmcs.automator.exception.ServerException;
+import cn.chci.hmcs.automator.exception.TimeoutException;
 import cn.chci.hmcs.automator.handler.ExceptionHandler;
 import cn.chci.hmcs.automator.handler.ResponseHandler;
 import cn.chci.hmcs.automator.listener.ResponseListener;
@@ -18,7 +19,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 
 /**
  * @Author 有三

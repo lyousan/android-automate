@@ -5,7 +5,7 @@ import android.view.accessibility.AccessibilityNodeInfo;
 
 import cn.chci.hmcs.automator.exception.NodeChangedException;
 import cn.chci.hmcs.automator.exception.NodeInoperableException;
-import cn.chci.hmcs.automator.layout.LayoutCache;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
 

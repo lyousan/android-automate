@@ -1,16 +1,14 @@
 package cn.chci.hmcs.automator.model;
 
 import android.content.res.Resources;
-import android.os.Bundle;
 import android.view.accessibility.AccessibilityNodeInfo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.UUID;
 
-import cn.chci.hmcs.automator.layout.LayoutCache;
-import cn.chci.hmcs.automator.layout.LayoutParser;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
 
 /**
  * 对界面节点信息的包装，便于遍历、转换

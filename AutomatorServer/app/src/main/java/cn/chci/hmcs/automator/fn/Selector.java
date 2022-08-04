@@ -1,16 +1,20 @@
 package cn.chci.hmcs.automator.fn;
 
 import android.graphics.Rect;
-import cn.chci.hmcs.automator.layout.LayoutCache;
-import cn.chci.hmcs.automator.layout.LayoutInspector;
-import cn.chci.hmcs.automator.layout.LayoutParser;
+
+import cn.chci.hmcs.automator.accessibiliy.device.DisplayDevice;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutCache;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutInspector;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutParser;
 import cn.chci.hmcs.automator.model.Command;
 import cn.chci.hmcs.automator.model.Node;
+import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class Selector extends Command {
+    private Rect displayDeviceSize;
 
     public String findOne(By by) {
         return findOne(by, true);
@@ -41,13 +45,19 @@ public class Selector extends Command {
 
 
     private boolean isInScreen(Node node) {
+        if (displayDeviceSize == null) {
+            displayDeviceSize = ((DisplayDevice) BeanContextHolder.getInstance().getBean("displayDevice")).getDeviceSize();
+        }
         if (node == null || node.getNode() == null) {
             return false;
         }
         Rect rect = new Rect();
         node.getNode().getBoundsInScreen(rect);
-        return rect.top >= 0 && rect.bottom >= 0 && rect.left >= 0 && rect.right >= 0
-                && rect.bottom <= LayoutInspector.boundsInScreen.bottom && rect.right <= LayoutInspector.boundsInScreen.right;
+        if (displayDeviceSize != null) {
+            return rect.top >= 0 && rect.bottom >= 0 && rect.left >= 0 && rect.right >= 0
+                    && rect.bottom <= displayDeviceSize.bottom && rect.right <= displayDeviceSize.right;
+        }
+        return true;
     }
 
 }

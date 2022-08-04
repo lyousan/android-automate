@@ -1,7 +1,7 @@
 package cn.chci.hmcs.automator.utils;
 
 import cn.chci.hmcs.automator.exception.LayoutInspectorNotInitException;
-import cn.chci.hmcs.automator.layout.LayoutInspector;
+import cn.chci.hmcs.automator.accessibiliy.layout.LayoutInspector;
 
 public class LayoutInspectorGetter {
     private static final BeanContextHolder beanContextHolder = BeanContextHolder.getInstance();
