@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
 public class By {
     String xpath;

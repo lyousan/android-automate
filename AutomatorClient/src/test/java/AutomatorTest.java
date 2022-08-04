@@ -1,5 +1,5 @@
 import cn.chci.hmcs.automator.core.AndroidBot;
-import cn.chci.hmcs.automator.fn.By;
+import cn.chci.hmcs.automator.accessibility.fn.By;
 import cn.chci.hmcs.automator.model.Node;
 import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import lombok.extern.slf4j.Slf4j;

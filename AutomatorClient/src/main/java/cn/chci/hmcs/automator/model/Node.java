@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automator.model;
 
-import cn.chci.hmcs.automator.fn.NodeActions;
+import cn.chci.hmcs.automator.accessibility.fn.NodeActions;
 import cn.chci.hmcs.automator.socket.Client;
 
 import java.awt.*;

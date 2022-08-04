@@ -1,8 +1,8 @@
 package cn.chci.hmcs.automator.core;
 
-import cn.chci.hmcs.automator.fn.By;
-import cn.chci.hmcs.automator.fn.Dump;
-import cn.chci.hmcs.automator.fn.Selector;
+import cn.chci.hmcs.automator.accessibility.fn.By;
+import cn.chci.hmcs.automator.accessibility.fn.Dump;
+import cn.chci.hmcs.automator.accessibility.fn.Selector;
 import cn.chci.hmcs.automator.model.Node;
 import cn.chci.hmcs.automator.socket.Client;
 import lombok.SneakyThrows;

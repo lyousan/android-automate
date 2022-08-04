@@ -1,4 +1,4 @@
-package cn.chci.hmcs.automator.fn;
+package cn.chci.hmcs.automator.accessibility.fn;
 
 
 import cn.chci.hmcs.automator.dto.Request;
