@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automator.exception;
 
-public class NodeInoperableException extends CustomException {
+public class NodeInoperableException extends AutomatorException {
     public NodeInoperableException() {
         super();
         code = 503;

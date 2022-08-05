@@ -12,9 +12,13 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import cn.chci.hmcs.automator.accessibility.device.DisplayDevice;
 import cn.chci.hmcs.automator.socket.Server;
+import cn.chci.hmcs.automator.utils.AccessibilityServiceUtils;
+import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 public class MainActivity extends AppCompatActivity {
+    private BeanContextHolder beanContextHolder = BeanContextHolder.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,14 +31,17 @@ public class MainActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 //        setAccessibility(getApplicationContext());
-        // 判断当前是否开启了无障碍权限，如果没有的话就会跳转到无障碍的设置界面
-        if (!MyAccessibilityService.isServiceON(getApplicationContext(), MyAccessibilityService.class.getName())) {
-            Intent intent = new Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(intent);
-        }
+
+        init();
         // 启动socket服务端，端口是33579，客户端（PC）连接前记得连接数据线，然后通过adb进行端口转发
         Server.start();
+    }
+
+    private void init() {
+        // 显示设备
+        beanContextHolder.setBean("displayDevice", new DisplayDevice(this));
+        // 无障碍服务工具类
+        beanContextHolder.setBean("accessibilityServiceUtils", new AccessibilityServiceUtils(this));
     }
 
     /**

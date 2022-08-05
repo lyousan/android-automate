@@ -31,9 +31,6 @@ public class SocketReadHandler implements Runnable {
             while ((content = reader.readLine()) != null) {
                 Log.d(LOG_TAG, "SocketReadHandler received: " + content);
                 Request request = Request.convertToRequest(content);
-//                Request request = new Request();
-//                request.setCommand(new Command("Dump", "dump", new Class[0], null));
-//                request.setCommand(new Command("Selector", "findOne", new Class[]{Selector.By.class},new Object[]{Selector.By.xpath("//android.widget.EditText")}));
                 Server.emit(id, request);
             }
         } catch (IOException e) {

@@ -9,14 +9,9 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 
-import org.dom4j.DocumentException;
-
 import java.util.List;
 
-import cn.chci.hmcs.automator.layout.LayoutCache;
-import cn.chci.hmcs.automator.layout.LayoutInspector;
-import cn.chci.hmcs.automator.model.Node;
-import cn.chci.hmcs.automator.layout.LayoutParser;
+import cn.chci.hmcs.automator.accessibility.layout.LayoutInspector;
 import cn.chci.hmcs.automator.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {
