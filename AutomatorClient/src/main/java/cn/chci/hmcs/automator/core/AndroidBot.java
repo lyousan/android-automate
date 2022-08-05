@@ -2,6 +2,7 @@ package cn.chci.hmcs.automator.core;
 
 import cn.chci.hmcs.automator.accessibility.fn.By;
 import cn.chci.hmcs.automator.accessibility.fn.Dump;
+import cn.chci.hmcs.automator.accessibility.fn.Global;
 import cn.chci.hmcs.automator.accessibility.fn.Selector;
 import cn.chci.hmcs.automator.model.Node;
 import cn.chci.hmcs.automator.socket.Client;
@@ -16,6 +17,8 @@ import java.util.List;
  **/
 public class AndroidBot {
     private final Client client;
+
+    private final Global global;
     private final Selector selector;
     private final Dump dump;
     private final String udid;
@@ -23,6 +26,7 @@ public class AndroidBot {
     private AndroidBot(String udid) {
         this.udid = udid;
         client = new Client();
+        global = new Global();
         selector = new Selector();
         dump = new Dump();
     }
@@ -64,6 +68,24 @@ public class AndroidBot {
             return null;
         }
         return selector.find(client, by, inScreen);
+    }
+
+    //////////////////////////////////////////////////
+
+    public void gotoAccessibilitySettings() {
+        global.gotoAccessibilitySettings(client);
+    }
+
+    public boolean back() {
+        return global.back(client);
+    }
+
+    public boolean home() {
+        return global.home(client);
+    }
+
+    public boolean recents() {
+        return global.recents(client);
     }
 
 }

@@ -23,7 +23,7 @@ public class Client {
     final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
 
     public void start(String udid) throws IOException, InterruptedException {
-        // 关闭Automator
+        // 关闭Automator 如果要对app进行debug的话需要注释关闭automator的这一行
         AdbUtils.exec("adb -s " + udid + " shell am force-stop cn.chci.hmcs.automator");
         // 提权获取无障碍权限（有可能显示已开启，但是不起作用，安卓系统的bug，需要重启）
         AdbUtils.exec("adb -s " + udid + " shell pm grant cn.chci.hmcs.automator android.permission.WRITE_SECURE_SETTINGS");

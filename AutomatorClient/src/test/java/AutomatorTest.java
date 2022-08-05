@@ -1,7 +1,6 @@
-import cn.chci.hmcs.automator.core.AndroidBot;
 import cn.chci.hmcs.automator.accessibility.fn.By;
+import cn.chci.hmcs.automator.core.AndroidBot;
 import cn.chci.hmcs.automator.model.Node;
-import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,7 +22,7 @@ public class AutomatorTest {
     @BeforeEach
     void init() throws IOException, InterruptedException {
         // 退回桌面
-        AdbUtils.exec("adb -s MDX0220427011762 shell input keyevent 3");
+//        AdbUtils.exec("adb -s MDX0220427011762 shell input keyevent 3");
         bot = AndroidBot.createAndroidBotAndConnect("MDX0220427011762");
     }
 
@@ -74,5 +73,25 @@ public class AutomatorTest {
         node.input("Hello World");
         node = bot.findOne(By.id("com.tencent.mm:id/cd7"));
         log.info("node.text: {}", node.getText());
+    }
+
+    @Test
+    void testGotoAccessibilitySettings() {
+        bot.gotoAccessibilitySettings();
+    }
+
+    @Test
+    void back() {
+        bot.back();
+    }
+
+    @Test
+    void home() {
+        bot.home();
+    }
+
+    @Test
+    void recents() {
+        bot.recents();
     }
 }
