@@ -19,17 +19,22 @@
 
 # 使用说明
 
-`AutomatorClient`模块下的`resources/automator.apk`是一个已经打包编译并签名的apk，可以直接安装到手机上。
-连接上数据线，开启usb调试模式后，将`resources/config.properties`中的`udid`的值改为当前设备的`udid`，最后启动`cn.chci.hmcs.automator.socket.Main#main`即可。
-必须要先安装上apk后再启动客户端程序，如果启动后手机跳转到无障碍的设置界面，但是并没有显示出`Automator`的话，需要清理后台手动开关几次或者重启。
-客户端程序启动成功后，在控制台输入任意字符即可进行测试。
-> 输入 `dump` 会返回手机当前的界面信息，如果没有正常获取到无障碍权限的话会提示 “layoutInspector暂未初始化”
+前置条件：连接上数据线，开启usb调试模式
+`AutomatorClient`模块下的`resources/app-release.apk`是一个已经打包编译并签名的apk，可以直接安装到手机上。
+
+具体的使用见`AutomatorClient`模块下的测试样例。
 
 ---
 # 开发计划
-- 协议制定与实现
-- 控件操作（点击、输入......）
-- API封装
+- √ 协议制定与实现
+- √ 控件查找
+- √ 控件操作（点击、输入......）
+- √ 全局操作（back键、home键、任务键）
+- √ API封装
+- 获取app相关信息（activity......）
+- 对app的相关操作（启动......）
+- 模拟手势
+- 隐式等待
 - ......
 
 ---
