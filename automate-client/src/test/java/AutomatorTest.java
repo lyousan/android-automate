@@ -82,17 +82,27 @@ public class AutomatorTest {
     }
 
     @Test
-    void back() {
+    void testBack() {
         bot.back();
     }
 
     @Test
-    void home() {
+    void testHome() {
         bot.home();
     }
 
     @Test
-    void recents() {
+    void testRecents() {
         bot.recents();
+    }
+
+    @Test
+    void testCurrentActivity() {
+        log.info("currentActivity: {}", bot.currentActivity());
+    }
+
+    @Test
+    void testCurrentPackage() {
+        log.info("currentPackage: {}", bot.currentPackage());
     }
 }

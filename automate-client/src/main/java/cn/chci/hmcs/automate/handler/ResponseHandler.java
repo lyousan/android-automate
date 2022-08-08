@@ -1,5 +1,6 @@
 package cn.chci.hmcs.automate.handler;
 
+import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.automate.dto.Response;
 
 /**
@@ -9,5 +10,5 @@ import cn.chci.hmcs.automate.dto.Response;
  **/
 @FunctionalInterface
 public interface ResponseHandler {
-    void handle(Response response) throws Exception;
+    void handle(Request request, Response response) throws Exception;
 }

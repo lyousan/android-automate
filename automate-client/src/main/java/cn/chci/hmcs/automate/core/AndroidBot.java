@@ -1,9 +1,6 @@
 package cn.chci.hmcs.automate.core;
 
-import cn.chci.hmcs.automate.accessibility.fn.By;
-import cn.chci.hmcs.automate.accessibility.fn.Dump;
-import cn.chci.hmcs.automate.accessibility.fn.Global;
-import cn.chci.hmcs.automate.accessibility.fn.Selector;
+import cn.chci.hmcs.automate.accessibility.fn.*;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.socket.Client;
 import lombok.SneakyThrows;
@@ -19,6 +16,7 @@ public class AndroidBot {
     private final Client client;
 
     private final Global global;
+    private final ActivityInfo activityInfo;
     private final Selector selector;
     private final Dump dump;
     private final String udid;
@@ -27,6 +25,7 @@ public class AndroidBot {
         this.udid = udid;
         client = new Client();
         global = new Global();
+        activityInfo = new ActivityInfo();
         selector = new Selector();
         dump = new Dump();
     }
@@ -86,6 +85,14 @@ public class AndroidBot {
 
     public boolean recents() {
         return global.recents(client);
+    }
+
+    public String currentActivity() {
+        return activityInfo.currentActivity(client);
+    }
+
+    public String currentPackage() {
+        return activityInfo.currentPackage(client);
     }
 
 }

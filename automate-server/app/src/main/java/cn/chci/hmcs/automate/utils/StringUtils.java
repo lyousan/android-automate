@@ -7,7 +7,7 @@ public class StringUtils {
      * @param str
      * @return 是否为空
      */
-    public static boolean isEmpty(String str) {
+    public static boolean isEmpty(CharSequence str) {
         if (str == null) {
             return true;
         }

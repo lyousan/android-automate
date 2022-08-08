@@ -15,6 +15,7 @@ import java.net.Socket;
  **/
 @Slf4j
 public class Client {
+    public static final String PACKAGE_NAME = "cn.chci.hmcs.automate";
     /**
      * 缓存管道
      */
@@ -23,14 +24,14 @@ public class Client {
     final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
 
     public void start(String udid) throws IOException, InterruptedException {
-        // 关闭Automator 如果要对app进行debug的话需要注释关闭automator的这一行
-        AdbUtils.exec("adb -s " + udid + " shell am force-stop cn.chci.hmcs.automate");
+        // 关闭automate 如果要对app进行debug的话需要注释关闭automate的这一行
+        AdbUtils.exec("adb -s " + udid + " shell am force-stop " + PACKAGE_NAME);
         // 提权获取无障碍权限（有可能显示已开启，但是不起作用，安卓系统的bug，需要重启）
-        AdbUtils.exec("adb -s " + udid + " shell pm grant cn.chci.hmcs.automate android.permission.WRITE_SECURE_SETTINGS");
+        AdbUtils.exec("adb -s " + udid + " shell pm grant " + PACKAGE_NAME + " android.permission.WRITE_SECURE_SETTINGS");
         // 端口转发
         AdbUtils.exec("adb -s " + udid + " forward tcp:33579 tcp:33579");
         // 启动app
-        AdbUtils.exec("adb -s " + udid + " shell am start cn.chci.hmcs.automate/.MainActivity");
+        AdbUtils.exec("adb -s " + udid + " shell am start " + PACKAGE_NAME + "/.MainActivity");
         // 回退app
         AdbUtils.exec("adb -s " + udid + " shell input keyevent 4");
 //        Thread.sleep(3000);

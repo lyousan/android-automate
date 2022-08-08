@@ -11,6 +11,7 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import cn.chci.hmcs.automate.accessibility.activity.ActivityInfoProvider;
 import cn.chci.hmcs.automate.accessibility.device.DisplayDevice;
 import cn.chci.hmcs.automate.socket.Server;
 import cn.chci.hmcs.automate.utils.AccessibilityServiceUtils;
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        // 注册event委托器
+        ActivityInfoProvider activityInfoProvider = new ActivityInfoProvider();
+        beanContextHolder.setBean("activityInfoProvider", activityInfoProvider);
+        MyAccessibilityService.delegates.add(activityInfoProvider);
         // 显示设备
         beanContextHolder.setBean("displayDevice", new DisplayDevice(this));
         // 无障碍服务工具类
@@ -61,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 enabledServices = new HashSet<ComponentName>();
             }
 
-            ComponentName toggledService = ComponentName.unflattenFromString("cn.chci.hmcs.automator/.MyAccessibilityService");//添加自己服务的包名和类名
+            ComponentName toggledService = ComponentName.unflattenFromString("cn.chci.hmcs.automate/.MyAccessibilityService");//添加自己服务的包名和类名
             enabledServices.add(toggledService);    //将需要设置的服务降到集合里
             // Enabling at least one service enables accessibility.
 

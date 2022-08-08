@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -69,7 +70,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
             }
             // 返回响应
             T response = RESULT.get(request.getId());
-            responseHandler.handle(response);
+            responseHandler.handle(request, response);
             return response;
         } catch (Exception e) {
             // 异常处理
@@ -88,7 +89,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     }
 
 
-    protected void defaultOnResponse(Response response) {
+    protected void defaultOnResponse(Request request, Response response) {
         if (response == null) {
             logger.error("服务端返回为null");
             return;
