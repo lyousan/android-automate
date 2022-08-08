@@ -7,11 +7,11 @@
 
 # 模块说明
 
-## AutomatorServer
+## automate-server
 
 该模块为安卓工程，使用SDK安卓10(API30)开发，主要实现无障碍服务的细化功能封装并暴露给客户端，建议使用`Android Studio`打开项目。
 
-## AutomatorClient
+## automate-client
 
 该模块为运行在PC端的客户端程序，主要进行一个示例演示和功能调试
 
@@ -20,9 +20,9 @@
 # 使用说明
 
 前置条件：连接上数据线，开启usb调试模式
-`AutomatorClient`模块下的`resources/app-release.apk`是一个已经打包编译并签名的apk，可以直接安装到手机上。
+`build`目录下的`release/app-release.apk`是一个已经打包编译并签名的apk，可以直接安装到手机上。
 
-具体的使用见`AutomatorClient`模块下的测试样例。
+具体的使用见`automate-client`模块下的测试样例。
 
 ---
 # 开发计划
