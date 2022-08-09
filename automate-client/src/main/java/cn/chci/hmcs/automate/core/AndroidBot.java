@@ -95,4 +95,12 @@ public class AndroidBot {
         return activityInfo.currentPackage(client);
     }
 
+    public String getClipboardText() {
+        return global.getClipboardText(client);
+    }
+
+    public boolean setClipboardText(String text) {
+        return global.setClipboardText(client, text);
+    }
+
 }

@@ -2,10 +2,12 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import android.accessibilityservice.AccessibilityService;
 
+import cn.chci.hmcs.automate.accessibility.clipboard.ClipboardProvider;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.automate.utils.AccessibilityServiceGetter;
 import cn.chci.hmcs.automate.utils.AccessibilityServiceUtils;
 import cn.chci.hmcs.automate.utils.BeanContextHolder;
+import cn.chci.hmcs.automate.utils.StringUtils;
 
 public class Global extends Command {
     private BeanContextHolder beanContextHolder = BeanContextHolder.getInstance();
@@ -48,5 +50,21 @@ public class Global extends Command {
      */
     public boolean recents() {
         return AccessibilityServiceGetter.getInstance().performGlobalAction(AccessibilityService.GLOBAL_ACTION_RECENTS);
+    }
+
+    /**
+     * 获取剪贴板的内容
+     *
+     * @return
+     */
+    public String getClipboardText() {
+        return ((ClipboardProvider) beanContextHolder.getBean("clipboardProvider")).getClipboardText();
+    }
+
+    /**
+     * 设置剪贴板的内容
+     */
+    public boolean setClipboardText(String text) {
+        return ((ClipboardProvider) beanContextHolder.getBean("clipboardProvider")).setClipboardText(text);
     }
 }

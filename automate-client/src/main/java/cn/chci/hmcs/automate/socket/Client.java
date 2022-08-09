@@ -25,7 +25,7 @@ public class Client {
 
     public void start(String udid) throws IOException, InterruptedException {
         // 关闭automate 如果要对app进行debug的话需要注释关闭automate的这一行
-        AdbUtils.exec("adb -s " + udid + " shell am force-stop " + PACKAGE_NAME);
+//        AdbUtils.exec("adb -s " + udid + " shell am force-stop " + PACKAGE_NAME);
         // 提权获取无障碍权限（有可能显示已开启，但是不起作用，安卓系统的bug，需要重启）
         AdbUtils.exec("adb -s " + udid + " shell pm grant " + PACKAGE_NAME + " android.permission.WRITE_SECURE_SETTINGS");
         // 端口转发

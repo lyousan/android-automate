@@ -42,4 +42,20 @@ public class Global extends AbstractCommand<Response> {
         Response response = send(client, request);
         return Boolean.parseBoolean(response.getData().toString());
     }
+
+    public String getClipboardText(Client client) {
+        Request request = new Request();
+        Command command = new Command("Global", "getClipboardText", new Class[0], new Object[0]);
+        request.setCommand(command);
+        Response response = send(client, request);
+        return response.getData().toString();
+    }
+
+    public boolean setClipboardText(Client client, String text) {
+        Request request = new Request();
+        Command command = new Command("Global", "setClipboardText", new Class[]{String.class}, new Object[]{text});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
 }

@@ -4,7 +4,9 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Looper;
 import android.provider.Settings;
 
 import java.util.Collections;
@@ -12,6 +14,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import cn.chci.hmcs.automate.accessibility.activity.ActivityInfoProvider;
+import cn.chci.hmcs.automate.accessibility.clipboard.ClipboardProvider;
 import cn.chci.hmcs.automate.accessibility.device.DisplayDevice;
 import cn.chci.hmcs.automate.socket.Server;
 import cn.chci.hmcs.automate.utils.AccessibilityServiceUtils;
@@ -38,6 +41,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void init() {
+        if (Looper.myLooper() == null) {
+            Looper.prepare();
+        }
         // 注册event委托器
         ActivityInfoProvider activityInfoProvider = new ActivityInfoProvider();
         beanContextHolder.setBean("activityInfoProvider", activityInfoProvider);
@@ -46,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
         beanContextHolder.setBean("displayDevice", new DisplayDevice(this));
         // 无障碍服务工具类
         beanContextHolder.setBean("accessibilityServiceUtils", new AccessibilityServiceUtils(this));
+        // 剪贴板操作，仅限安卓10以下
+        beanContextHolder.setBean("clipboardProvider", new ClipboardProvider(this));
     }
 
     /**

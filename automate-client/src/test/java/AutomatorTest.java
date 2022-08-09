@@ -23,8 +23,8 @@ public class AutomatorTest {
     @BeforeEach
     void init() throws IOException, InterruptedException {
         // 退回桌面
-        AdbUtils.exec("adb -s 5EN0219529000872 shell input keyevent 3");
-        bot = AndroidBot.createAndroidBotAndConnect("5EN0219529000872");
+//        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
+        bot = AndroidBot.createAndroidBotAndConnect("RKAM5L55T8FEHMOV");
     }
 
     @Test
@@ -104,5 +104,15 @@ public class AutomatorTest {
     @Test
     void testCurrentPackage() {
         log.info("currentPackage: {}", bot.currentPackage());
+    }
+
+    @Test
+    void testGetClipboardText() {
+        log.info("testGetClipboardText: {}", bot.getClipboardText());
+    }
+
+    @Test
+    void testSetClipboardText() {
+        log.info("testSetClipboardText: {}", bot.setClipboardText("hello world"));
     }
 }
