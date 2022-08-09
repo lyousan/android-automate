@@ -2,7 +2,7 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import android.graphics.Rect;
 
-import cn.chci.hmcs.automate.accessibility.device.DisplayDevice;
+import cn.chci.hmcs.automate.accessibility.device.DeviceInfoProvider;
 import cn.chci.hmcs.automate.accessibility.layout.LayoutCache;
 import cn.chci.hmcs.automate.accessibility.layout.LayoutParser;
 import cn.chci.hmcs.automate.model.Command;
@@ -45,7 +45,7 @@ public class Selector extends Command {
 
     private boolean isInScreen(Node node) {
         if (displayDeviceSize == null) {
-            displayDeviceSize = ((DisplayDevice) BeanContextHolder.getInstance().getBean("displayDevice")).getDeviceSize();
+            displayDeviceSize = ((DeviceInfoProvider) BeanContextHolder.getInstance().getBean("deviceInfoProvider")).getDeviceSize();
         }
         if (node == null || node.getNode() == null) {
             return false;

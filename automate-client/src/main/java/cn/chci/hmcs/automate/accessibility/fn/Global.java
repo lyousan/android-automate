@@ -3,7 +3,9 @@ package cn.chci.hmcs.automate.accessibility.fn;
 import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.automate.dto.Response;
 import cn.chci.hmcs.automate.model.Command;
+import cn.chci.hmcs.automate.model.Point;
 import cn.chci.hmcs.automate.socket.Client;
+
 
 /**
  * @author 有三
@@ -54,6 +56,30 @@ public class Global extends AbstractCommand<Response> {
     public boolean setClipboardText(Client client, String text) {
         Request request = new Request();
         Command command = new Command("Global", "setClipboardText", new Class[]{String.class}, new Object[]{text});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
+
+    public boolean click(Client client, Point point) {
+        Request request = new Request();
+        Command command = new Command("Global", "click", new Class[]{Point.class}, new Object[]{point});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
+
+    public boolean longClick(Client client, Point point, Integer duration) {
+        Request request = new Request();
+        Command command = new Command("Global", "longClick", new Class[]{Point.class, Integer.class}, new Object[]{point, duration});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
+
+    public boolean swipe(Client client, Point start, Point end, Integer duration) {
+        Request request = new Request();
+        Command command = new Command("Global", "swipe", new Class[]{Point.class, Point.class, Integer.class}, new Object[]{start, end, duration});
         request.setCommand(command);
         Response response = send(client, request);
         return Boolean.parseBoolean(response.getData().toString());

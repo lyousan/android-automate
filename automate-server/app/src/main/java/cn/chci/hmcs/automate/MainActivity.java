@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Looper;
 import android.provider.Settings;
@@ -15,7 +14,7 @@ import java.util.Set;
 
 import cn.chci.hmcs.automate.accessibility.activity.ActivityInfoProvider;
 import cn.chci.hmcs.automate.accessibility.clipboard.ClipboardProvider;
-import cn.chci.hmcs.automate.accessibility.device.DisplayDevice;
+import cn.chci.hmcs.automate.accessibility.device.DeviceInfoProvider;
 import cn.chci.hmcs.automate.socket.Server;
 import cn.chci.hmcs.automate.utils.AccessibilityServiceUtils;
 import cn.chci.hmcs.automate.utils.BeanContextHolder;
@@ -49,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
         beanContextHolder.setBean("activityInfoProvider", activityInfoProvider);
         MyAccessibilityService.delegates.add(activityInfoProvider);
         // 显示设备
-        beanContextHolder.setBean("displayDevice", new DisplayDevice(this));
+        beanContextHolder.setBean("deviceInfoProvider", new DeviceInfoProvider(this));
         // 无障碍服务工具类
         beanContextHolder.setBean("accessibilityServiceUtils", new AccessibilityServiceUtils(this));
         // 剪贴板操作，仅限安卓10以下

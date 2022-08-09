@@ -90,6 +90,20 @@ public class Node {
         return nodeActions.input(client, this, text);
     }
 
+    public boolean scrollUp() {
+        if (nodeActions == null) {
+            nodeActions = new NodeActions();
+        }
+        return nodeActions.scrollUp(client, this);
+    }
+
+    public boolean scrollDown() {
+        if (nodeActions == null) {
+            nodeActions = new NodeActions();
+        }
+        return nodeActions.scrollDown(client, this);
+    }
+
     /////////////////////////////////////////////
 
     public Client getClient() {

@@ -55,6 +55,30 @@ public class NodeActions extends Command {
         return node.getNode().performAction(AccessibilityNodeInfo.ACTION_SET_TEXT, bundle);
     }
 
+    public boolean scrollUp(String cacheId) {
+        Node node = LayoutCache.findOneByCacheId(cacheId);
+        if (node == null || !node.getCacheId().equals(cacheId)) {
+            throw new NodeChangedException("该节点或许已经发生变化了");
+        }
+        node = bubbleFind(node, n -> n.getNode().isScrollable());
+        if (node == null) {
+            throw new NodeInoperableException("找不到可以执行此操作的节点 ==> scrollable");
+        }
+        return node.getNode().performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD);
+    }
+
+    public boolean scrollDown(String cacheId) {
+        Node node = LayoutCache.findOneByCacheId(cacheId);
+        if (node == null || !node.getCacheId().equals(cacheId)) {
+            throw new NodeChangedException("该节点或许已经发生变化了");
+        }
+        node = bubbleFind(node, n -> n.getNode().isScrollable());
+        if (node == null) {
+            throw new NodeInoperableException("找不到可以执行此操作的节点 ==> scrollable");
+        }
+        return node.getNode().performAction(AccessibilityNodeInfo.ACTION_SCROLL_BACKWARD);
+    }
+
     private Node bubbleFind(Node node, Predicate<Node> predicate) {
         if (node == null) {
             return null;

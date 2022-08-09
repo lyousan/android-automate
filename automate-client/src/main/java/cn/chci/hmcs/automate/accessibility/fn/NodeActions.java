@@ -33,4 +33,20 @@ public class NodeActions extends AbstractCommand<Response> {
         Response response = send(client, request);
         return Boolean.parseBoolean(response.getData().toString());
     }
+
+    public boolean scrollUp(Client client, Node node) {
+        Request request = new Request();
+        Command command = new Command("NodeActions", "scrollUp", new Class[]{String.class}, new Object[]{node.getCacheId()});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
+
+    public boolean scrollDown(Client client, Node node) {
+        Request request = new Request();
+        Command command = new Command("NodeActions", "scrollDown", new Class[]{String.class}, new Object[]{node.getCacheId()});
+        request.setCommand(command);
+        Response response = send(client, request);
+        return Boolean.parseBoolean(response.getData().toString());
+    }
 }

@@ -2,6 +2,8 @@ package cn.chci.hmcs.automate.core;
 
 import cn.chci.hmcs.automate.accessibility.fn.*;
 import cn.chci.hmcs.automate.model.Node;
+import cn.chci.hmcs.automate.model.Point;
+import cn.chci.hmcs.automate.model.Rect;
 import cn.chci.hmcs.automate.socket.Client;
 import lombok.Getter;
 import lombok.SneakyThrows;
@@ -9,7 +11,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author 有三
@@ -18,11 +19,19 @@ import java.util.concurrent.TimeUnit;
  **/
 @Slf4j
 public class AndroidBot {
+    @Getter
     private final Client client;
+    @Getter
     private final Global global;
+    @Getter
     private final ActivityInfo activityInfo;
+    @Getter
     private final Selector selector;
+    @Getter
     private final Dump dump;
+    @Getter
+    private final Device device;
+    @Getter
     private final String udid;
 
 
@@ -33,6 +42,7 @@ public class AndroidBot {
         activityInfo = new ActivityInfo();
         selector = new Selector();
         dump = new Dump();
+        device = new Device();
     }
 
     @SneakyThrows
@@ -90,6 +100,14 @@ public class AndroidBot {
         }
     }
 
+    public void setSelectWaitOptions(WaitOptions waitOptions) {
+        selector.setWaitOptions(waitOptions);
+    }
+
+    public WaitOptions getSelectWaitOptions() {
+        return selector.getWaitOptions();
+    }
+
     //////////////////////////////////////////////////
 
     public void gotoAccessibilitySettings() {
@@ -108,14 +126,6 @@ public class AndroidBot {
         return global.recents(client);
     }
 
-    public String currentActivity() {
-        return activityInfo.currentActivity(client);
-    }
-
-    public String currentPackage() {
-        return activityInfo.currentPackage(client);
-    }
-
     public String getClipboardText() {
         return global.getClipboardText(client);
     }
@@ -124,13 +134,33 @@ public class AndroidBot {
         return global.setClipboardText(client, text);
     }
 
+    public boolean click(Point point) {
+        return global.click(client, point);
+    }
+
+    public boolean longClick(Point point, Integer duration) {
+        return global.longClick(client, point, duration);
+    }
+
+    public boolean swipe(Point start, Point end, Integer duration) {
+        return global.swipe(client, start, end, duration);
+    }
+
     ////////////////////////////////////////////////////
 
-    public void setSelectWaitOptions(WaitOptions waitOptions) {
-        selector.setWaitOptions(waitOptions);
+    public String currentActivity() {
+        return activityInfo.currentActivity(client);
     }
 
-    public WaitOptions getSelectWaitOptions() {
-        return selector.getWaitOptions();
+    public String currentPackage() {
+        return activityInfo.currentPackage(client);
     }
+
+    ////////////////////////////////////////////////////
+
+    public Rect getScreenSize() {
+        return device.getScreenSize(client);
+    }
+
+    ////////////////////////////////////////////////////
 }

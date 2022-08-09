@@ -1,12 +1,14 @@
 import cn.chci.hmcs.automate.accessibility.fn.By;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
+import cn.chci.hmcs.automate.model.Point;
 import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 
@@ -24,7 +26,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndroidBotAndConnect("RKAM5L55T8FEHMOV");
+        bot = AndroidBot.createAndroidBotAndConnect("emulator-5554");
     }
 
     @Test
@@ -114,5 +116,37 @@ public class AutomatorTest {
     @Test
     void testSetClipboardText() {
         log.info("testSetClipboardText: {}", bot.setClipboardText("hello world"));
+    }
+
+    @Test
+    void testGlobalClick() {
+        log.info("testGlobalClick: {}", bot.click(new Point(200, 200)));
+    }
+
+    @Test
+    void testGlobalLongClick() {
+        log.info("testGlobalLongClick: {}", bot.longClick(new Point(124, 360), 5000));
+    }
+
+    @Test
+    void testGlobalSwipe() {
+        log.info("testGlobalSwipe: {}", bot.swipe(new Point(200, 200), new Point(540, 1500), 5000));
+    }
+
+    @Test
+    void testScreenSize() {
+        log.info("testScreenSize: {}", bot.getScreenSize());
+    }
+
+    @Test
+    void testScrollUp() {
+        Node node = bot.findOne(By.id("com.android.settings:id/main_content_scrollable_container"));
+        log.info("testScrollUp: {}", node.scrollUp());
+    }
+
+    @Test
+    void testScrollDown() {
+        Node node = bot.findOne(By.id("com.android.settings:id/main_content_scrollable_container"));
+        log.info("testScrollDown: {}", node.scrollDown());
     }
 }
