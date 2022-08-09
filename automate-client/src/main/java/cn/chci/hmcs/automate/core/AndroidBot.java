@@ -3,23 +3,28 @@ package cn.chci.hmcs.automate.core;
 import cn.chci.hmcs.automate.accessibility.fn.*;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.socket.Client;
+import lombok.Getter;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 有三
  * @date 2022-08-03 21:17
  * @description
  **/
+@Slf4j
 public class AndroidBot {
     private final Client client;
-
     private final Global global;
     private final ActivityInfo activityInfo;
     private final Selector selector;
     private final Dump dump;
     private final String udid;
+
 
     private AndroidBot(String udid) {
         this.udid = udid;
@@ -45,28 +50,44 @@ public class AndroidBot {
         if (by == null) {
             return null;
         }
-        return selector.findOne(client, by);
+        try {
+            return selector.findOne(client, by);
+        } catch (InterruptedException e) {
+            return null;
+        }
     }
 
     public Node findOne(By by, boolean inScreen) {
         if (by == null) {
             return null;
         }
-        return selector.findOne(client, by, inScreen);
+        try {
+            return selector.findOne(client, by, inScreen);
+        } catch (InterruptedException e) {
+            return null;
+        }
     }
 
     public List<Node> find(By by) {
         if (by == null) {
             return null;
         }
-        return selector.find(client, by);
+        try {
+            return selector.find(client, by);
+        } catch (InterruptedException e) {
+            return Collections.emptyList();
+        }
     }
 
     public List<Node> find(By by, boolean inScreen) {
         if (by == null) {
             return null;
         }
-        return selector.find(client, by, inScreen);
+        try {
+            return selector.find(client, by, inScreen);
+        } catch (InterruptedException e) {
+            return Collections.emptyList();
+        }
     }
 
     //////////////////////////////////////////////////
@@ -103,4 +124,13 @@ public class AndroidBot {
         return global.setClipboardText(client, text);
     }
 
+    ////////////////////////////////////////////////////
+
+    public void setSelectWaitOptions(WaitOptions waitOptions) {
+        selector.setWaitOptions(waitOptions);
+    }
+
+    public WaitOptions getSelectWaitOptions() {
+        return selector.getWaitOptions();
+    }
 }

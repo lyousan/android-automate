@@ -58,7 +58,7 @@ public class WeChatTest {
     @Test
     void parsePublicItems() {
         log.info("parsePublicItems");
-        List<Node> nodes = bot.find(By.xpath("//*[@resource-id=\"search_result\"]//*[@class=\"android.view.View\"][@content-desc and not(@content-desc=\"\")]"));
+        List<Node> nodes = bot.find(By.xpath("//*[@resource-id=\"search_result\"]//*[@class=\"android.view.View\"][@content-desc and not(@content-desc=\"\")]"),false);
         nodes.forEach(node -> {
             log.info("描述: {}", node.getContentDesc());
             log.info("坐标: {}", node.getRect());

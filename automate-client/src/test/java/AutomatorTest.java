@@ -45,7 +45,7 @@ public class AutomatorTest {
     @Test
     void testFind() {
         // 桌面
-        List<Node> nodes = bot.find(By.xpath("//*[not(@content-desc=\"\")]"));
+        List<Node> nodes = bot.find(By.id("com.tencent.mm:id/bdq"));
         nodes.forEach(node -> log.info(node.getContentDesc()));
     }
 
