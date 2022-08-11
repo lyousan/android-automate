@@ -2,8 +2,10 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import android.util.Log;
 
+import cn.chci.hmcs.automate.MyAccessibilityService;
 import cn.chci.hmcs.automate.dto.Response;
 import cn.chci.hmcs.automate.exception.CustomException;
+import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
 import cn.chci.hmcs.automate.model.Command;
 
 import com.alibaba.fastjson2.JSONObject;
@@ -16,7 +18,7 @@ import java.util.Arrays;
 import java.util.Set;
 
 public class Executor {
-    private static final String LOG_TAG = "hmcs-automator-Executor";
+    private static final String LOG_TAG = "Executor";
 
     public static Response execute(Command command) {
         try {
@@ -25,6 +27,10 @@ public class Executor {
             /*if (!) {
                 return Response.clientFail("参数错误");
             }*/
+            // 检查无障碍权限
+            if (!MyAccessibilityService.isServiceON(MyAccessibilityService.instance, MyAccessibilityService.class.getName())) {
+                throw new NoAccessibilityServiceException();
+            }
             Object target = obtainTarget(command.getTargetName());
             Method method = obtainMethod(target, command);
             Object result = null;

@@ -3,7 +3,7 @@ package cn.chci.hmcs.automate.exception;
 public class NoAccessibilityServiceException extends CustomException {
     @Override
     public int getCode() {
-        return 504;
+        return 0;
     }
 
     @Override

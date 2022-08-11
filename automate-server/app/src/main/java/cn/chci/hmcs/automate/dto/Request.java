@@ -10,6 +10,7 @@ public class Request {
     private String id;
 
     private Command command;
+    private long timestamp;
 
     public static Request convertToRequest(String content) {
         return JSON.parseObject(content, Request.class);
@@ -29,5 +30,13 @@ public class Request {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

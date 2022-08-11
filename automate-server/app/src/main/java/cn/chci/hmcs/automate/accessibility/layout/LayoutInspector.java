@@ -17,7 +17,7 @@ import cn.chci.hmcs.automate.model.Node;
  * 该类用于获取界面节点信息，从开源项目autojs中截取的部分核心代码，使用该类的时候请确保已经获得了无障碍权限
  */
 public class LayoutInspector {
-    private static final String LOG_TAG = "hmcs-automator";
+    private static final String LOG_TAG = "LayoutInspector";
     private final Context mContext;
     private static final AtomicInteger count = new AtomicInteger(0);
 

@@ -7,10 +7,11 @@ import cn.chci.hmcs.automate.model.Command;
 import java.util.UUID;
 
 public class Request {
-    // TODO 额外的一些信息
 
     private final String id;
     private Command command;
+
+    private long timestamp;
 
     public Request() {
         id = UUID.randomUUID().toString();
@@ -30,5 +31,13 @@ public class Request {
 
     public String getId() {
         return id;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

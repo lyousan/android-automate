@@ -8,6 +8,9 @@ public class Response {
     private Object data;
     private String requestId;
 
+    private long requestTimestamp;
+    private long timestamp;
+
     public Response(int code, String msg) {
         this.code = code;
         this.msg = msg;
@@ -77,5 +80,21 @@ public class Response {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public long getRequestTimestamp() {
+        return requestTimestamp;
+    }
+
+    public void setRequestTimestamp(long requestTimestamp) {
+        this.requestTimestamp = requestTimestamp;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

@@ -74,7 +74,7 @@ public class SocketReadHandler implements Runnable {
                 String msg = new String(decompressData);
                 Response response = JSON.parseObject(msg, Response.class);
                 msg = JSON.toJSONString(response, JSONWriter.Feature.PrettyFormat);
-                log.debug("received response: {}", msg);
+                log.debug("received response take {} ms \n{}", (response.getTimestamp() - response.getRequestTimestamp()), msg);
                 ResponseListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {

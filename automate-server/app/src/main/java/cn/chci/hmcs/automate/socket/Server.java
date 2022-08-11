@@ -18,7 +18,7 @@ import cn.chci.hmcs.automate.dto.Response;
 import cn.chci.hmcs.automate.accessibility.fn.Executor;
 
 public class Server {
-    private static final String LOG_TAG = "hmcs-automator";
+    private static final String LOG_TAG = "Server";
     private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
     /**
      * 缓存socket连接
@@ -68,26 +68,12 @@ public class Server {
      */
     static void emit(Integer id, Request request) {
         try {
-            // 获取Command
             // 执行Command
             Response response = Executor.execute(request.getCommand());
             response.setRequestId(request.getId());
+            response.setRequestTimestamp(request.getTimestamp());
             // 序列化执行结果
             String msg = Response.convertToJson(response);
-//            String msg = "很高兴收到你的消息: " + commandName;
-            // TODO 目前瞎写的处理
-            /*if (commandName.equalsIgnoreCase("dump")) {
-                // 该类用于获取当前界面的节点信息
-                LayoutInspector layoutInspector = LayoutInspectorGetter.getInstance();
-                NodeInfo nodeInfo = layoutInspector.captureCurrentWindow();
-                // 将节点信息解析成xml
-                msg = NodeInfoParser.toXMLString(nodeInfo);
-                LayoutCache.save(msg, nodeInfo);
-            } else if (commandName.equalsIgnoreCase("find")) {
-                NodeInfo one = LayoutCache.findOne(commandName);
-                msg = NodeInfoParser.toXMLString(one);
-            }*/
-//            Log.d(LOG_TAG, "send msg: " + msg);
             byte[] compressed = SocketWriteHandler.compress(msg.getBytes(StandardCharsets.UTF_8));
             PipedOutputStream pipedOutputStream = PIPE_OUT.get(id);
             // 前八个字节表示内容的长度

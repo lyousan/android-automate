@@ -5,7 +5,7 @@ package cn.chci.hmcs.automate.exception;
  * @date 2022-08-02 20:55
  * @description
  **/
-public class ServerException extends RuntimeException{
+public class ServerException extends AutomatorException{
     public ServerException() {
         super();
     }

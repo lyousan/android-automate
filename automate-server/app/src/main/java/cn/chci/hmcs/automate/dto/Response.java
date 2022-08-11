@@ -7,6 +7,8 @@ public class Response {
     private String msg;
     private Object data;
     private String requestId;
+    private long requestTimestamp;
+    private long timestamp = System.currentTimeMillis();
 
     public Response(int code, String msg) {
         this.code = code;
@@ -77,5 +79,21 @@ public class Response {
 
     public void setRequestId(String requestId) {
         this.requestId = requestId;
+    }
+
+    public long getRequestTimestamp() {
+        return requestTimestamp;
+    }
+
+    public void setRequestTimestamp(long requestTimestamp) {
+        this.requestTimestamp = requestTimestamp;
+    }
+
+    public long getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(long timestamp) {
+        this.timestamp = timestamp;
     }
 }

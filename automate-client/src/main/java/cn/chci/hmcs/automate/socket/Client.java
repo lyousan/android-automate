@@ -3,6 +3,7 @@ package cn.chci.hmcs.automate.socket;
 import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -39,8 +40,8 @@ public class Client {
         pipedOut.connect(pipedIn);
         log.info("连接已建立......");
         // 开启两个独立的线程去处理读和写
-        new Thread(new SocketReadHandler(this, server), "ReadHandler").start();
-        new Thread(new SocketWriteHandler(this, server), "WriteHandler").start();
+        new Thread(new SocketReadHandler(this, server), "ReadHandler-" + udid).start();
+        new Thread(new SocketWriteHandler(this, server), "WriteHandler-" + udid).start();
     }
 
     public void emit(Request request) {
@@ -50,6 +51,7 @@ public class Client {
             writer.write(msg);
             writer.newLine();
             writer.flush();
+            log.debug("send request: {}\n", JSON.toJSONString(request, JSONWriter.Feature.PrettyFormat));
         } catch (Exception e) {
             log.error("Client#emit", e);
         }
