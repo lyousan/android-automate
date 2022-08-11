@@ -18,7 +18,7 @@ import cn.chci.hmcs.automate.accessibility.layout.LayoutInspector;
 import cn.chci.hmcs.automate.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {
-    private static final String LOG_TAG = "hmcs-automator";
+    private static final String LOG_TAG = "MyAccessibilityService";
     @SuppressLint("StaticFieldLeak")
     public static AccessibilityService instance;
     private final BeanContextHolder beanContextHolder = BeanContextHolder.getInstance();
@@ -74,9 +74,9 @@ public class MyAccessibilityService extends AccessibilityService {
      * @return
      */
     public static boolean isServiceON(Context context, String className) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(context.ACTIVITY_SERVICE);
+        ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
         List<ActivityManager.RunningServiceInfo> runningServices = activityManager.getRunningServices(100);
-        if (runningServices.size() < 0) {
+        if (runningServices.isEmpty()) {
             return false;
         }
         for (int i = 0; i < runningServices.size(); i++) {

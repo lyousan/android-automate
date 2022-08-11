@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
  * 读取到相关内容（来自客户端的信息）时，会向管道内输入内容，然后该类就会输出内容到客户端，整个过程由管道作为介质进行触发
  **/
 public class SocketWriteHandler implements Runnable {
-    private static final String LOG_TAG = "hmcs-automator";
+    private static final String LOG_TAG = "SocketWriteHandler";
     private final Integer id;
     private final Socket socket;
 

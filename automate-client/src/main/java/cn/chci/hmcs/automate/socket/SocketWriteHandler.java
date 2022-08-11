@@ -1,5 +1,8 @@
 package cn.chci.hmcs.automate.socket;
 
+import cn.chci.hmcs.automate.dto.Request;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -30,6 +33,7 @@ public class SocketWriteHandler implements Runnable {
                 writer.write(msg);
                 writer.newLine();
                 writer.flush();
+//                log.debug("send request: {}", JSON.toJSONString(JSON.parseObject(msg, Request.class), JSONWriter.Feature.PrettyFormat));
             }
         } catch (Exception e) {
             log.error("socket写入线程发生异常", e);

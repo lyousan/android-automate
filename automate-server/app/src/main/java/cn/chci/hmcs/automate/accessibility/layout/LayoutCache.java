@@ -1,5 +1,7 @@
 package cn.chci.hmcs.automate.accessibility.layout;
 
+import cn.chci.hmcs.automate.MyAccessibilityService;
+import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -15,7 +17,6 @@ import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.utils.LayoutInspectorGetter;
 import cn.chci.hmcs.automate.utils.StringUtils;
 
-// TODO 界面元素的缓存
 public class LayoutCache {
     /**
      * 缓存真实节点/缓存节点
@@ -119,18 +120,18 @@ public class LayoutCache {
         return nodes;
     }
 
-    private static void searchInTreeByDeep(Node root, Predicate<Node> filter, List<Node> data, boolean lazy) {
+    private static void searchInTreeByDeep(Node node, Predicate<Node> filter, List<Node> data, boolean lazy) {
         // 惰性查找，开启lazy模式时将只查找第一个满足条件的节点
         if (lazy && data.size() > 0) {
             return;
         }
-        if (filter.test(root)) {
-            data.add(root);
+        if (filter.test(node)) {
+            data.add(node);
             if (lazy) {
                 return;
             }
         }
-        List<Node> children = root.getChildren();
+        List<Node> children = node.getChildren();
         if (children.size() > 0) {
             for (Node child : children) {
                 searchInTreeByDeep(child, filter, data, lazy);
