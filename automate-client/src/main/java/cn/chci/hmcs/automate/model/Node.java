@@ -40,6 +40,7 @@ public class Node {
     private boolean checkable;
     private boolean checked;
     private boolean clickable;
+    private boolean editable;
     private boolean enabled;
     private boolean focusable;
     private boolean focused;
@@ -256,5 +257,13 @@ public class Node {
 
     public void setRect(Rectangle rect) {
         this.rect = rect;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 }

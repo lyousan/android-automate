@@ -2,6 +2,7 @@ package cn.chci.hmcs.automate.accessibility.layout;
 
 import cn.chci.hmcs.automate.MyAccessibilityService;
 import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
@@ -66,6 +67,7 @@ public class LayoutCache {
     }
 
     public static Node findOneByCacheId(String cacheId) {
+        refresh();
         List<Node> nodes = searchInTree(root, node -> node.getCacheId().equals(cacheId), true);
         return nodes.size() > 0 ? nodes.get(0) : null;
     }

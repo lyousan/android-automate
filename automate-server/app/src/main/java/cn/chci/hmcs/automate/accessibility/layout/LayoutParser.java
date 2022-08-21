@@ -93,6 +93,7 @@ public class LayoutParser {
                 .append(" ").append("checkable=\"").append(node.isCheckable()).append("\"")
                 .append(" ").append("checked=\"").append(node.isChecked()).append("\"")
                 .append(" ").append("clickable=\"").append(node.isClickable()).append("\"")
+                .append(" ").append("editable=\"").append(node.isEditable()).append("\"")
                 .append(" ").append("enabled=\"").append(node.isEnabled()).append("\"")
                 .append(" ").append("focusable=\"").append(node.isFocusable()).append("\"")
                 .append(" ").append("focused=\"").append(node.isFocused()).append("\"")
