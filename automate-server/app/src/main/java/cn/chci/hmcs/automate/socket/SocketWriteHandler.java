@@ -48,7 +48,7 @@ public class SocketWriteHandler implements Runnable {
         Thread.currentThread().setName("SocketWriteHandler-" + id);
         try (PipedInputStream in = Server.PIPE_IN.get(id);
              OutputStream out = socket.getOutputStream()) {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[8192];
             int len;
             // read方法是阻塞的，直到从管道中读取到数据或者连接断开
             while ((len = in.read(buffer)) > 0) {
