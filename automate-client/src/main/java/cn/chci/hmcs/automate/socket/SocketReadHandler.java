@@ -31,7 +31,7 @@ public class SocketReadHandler implements Runnable {
     @Override
     public void run() {
         try (InputStream in = socket.getInputStream()) {
-            byte[] buffer = new byte[4096];
+            byte[] buffer = new byte[8192];
             while (true) {
                 if (in.available() == 0) {
 //                    Thread.sleep(100);
