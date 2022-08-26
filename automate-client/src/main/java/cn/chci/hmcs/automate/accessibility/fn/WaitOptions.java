@@ -2,6 +2,7 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.SneakyThrows;
 
 import java.util.concurrent.TimeUnit;
 
@@ -41,7 +42,13 @@ public class WaitOptions {
         return System.currentTimeMillis() + implicitTimeUnit.toMillis(implicitTimeout);
     }
 
-    public void waiting() throws InterruptedException {
+    @SneakyThrows
+    public void waiting() {
         implicitTimeUnit.sleep(interval);
+    }
+
+    @Override
+    public String toString() {
+        return String.format("timeout: %s, interval: %s, unit: %s", implicitTimeout, interval, implicitTimeUnit);
     }
 }

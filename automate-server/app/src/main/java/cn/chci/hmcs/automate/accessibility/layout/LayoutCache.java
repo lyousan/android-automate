@@ -1,11 +1,13 @@
 package cn.chci.hmcs.automate.accessibility.layout;
 
 import cn.chci.hmcs.automate.MyAccessibilityService;
+import cn.chci.hmcs.automate.exception.InvalidXpathException;
 import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
+import org.dom4j.InvalidXPathException;
 import org.dom4j.io.SAXReader;
 
 import java.io.ByteArrayInputStream;
@@ -74,7 +76,12 @@ public class LayoutCache {
 
     public static String findCacheId(String xpath) {
         refresh();
-        org.dom4j.Node node = document.selectSingleNode(xpath);
+        org.dom4j.Node node = null;
+        try {
+            node = document.selectSingleNode(xpath);
+        } catch (InvalidXPathException e) {
+            throw new InvalidXpathException(xpath);
+        }
         if (node == null) {
             refresh();
             node = document.selectSingleNode(xpath);
@@ -87,7 +94,12 @@ public class LayoutCache {
 
     public static List<String> findCacheIds(String xpath) {
         refresh();
-        List<org.dom4j.Node> nodes = document.selectNodes(xpath);
+        List<org.dom4j.Node> nodes = null;
+        try {
+            nodes = document.selectNodes(xpath);
+        } catch (InvalidXPathException e) {
+            throw new InvalidXpathException(xpath);
+        }
         if (nodes.size() == 0) {
             refresh();
             nodes = document.selectNodes(xpath);

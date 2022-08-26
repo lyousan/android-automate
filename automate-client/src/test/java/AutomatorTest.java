@@ -26,7 +26,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndroidBotAndConnect("127.0.0.1:21503");
+        bot = AndroidBot.createAndroidBotAndConnect("5EN0219529000872");
     }
 
     @Test
@@ -38,7 +38,7 @@ public class AutomatorTest {
     @Test
     void testFindOne() {
         // 桌面
-        Node node = bot.findOne(By.id("com.huawei.android.totemweather:id/widget_dual_single_city_layout"), false);
+        Node node = bot.findOne(By.xpath("[]com.huawei.android.totemweather:id/widget_dual_single_city_layout"), false);
         log.info("node.text: {}", node.getText());
         log.info("node.rect: {}", node.getRect());
         log.info("node.children: {}", node.getChildren());

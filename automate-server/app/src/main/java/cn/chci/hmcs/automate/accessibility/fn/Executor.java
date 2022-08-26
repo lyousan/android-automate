@@ -53,6 +53,8 @@ public class Executor {
             if (e.getCause() instanceof CustomException) {
                 // 如果是内置的异常，进行不同的包装返回
                 CustomException ce = ((CustomException) e.getCause());
+                stringWriter = new StringWriter();
+                ce.printStackTrace(new PrintWriter(stringWriter, true));
                 return new Response(ce.getCode(), ce.getDescription(), stringWriter.toString());
             }
             return Response.serverFail("执行失败", stringWriter.toString());

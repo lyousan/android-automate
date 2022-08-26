@@ -11,6 +11,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Slf4j
@@ -20,10 +21,16 @@ public class Selector extends AbstractCommand<Response> {
     private WaitOptions waitOptions = WaitOptions.DEFAULT_WAIT_OPTIONS();
 
     public Node findOne(Client client, By by) throws InterruptedException {
+        if (by == null) {
+            return null;
+        }
         return findOne(client, by, true);
     }
 
     public Node findOne(Client client, By by, Boolean inScreen) throws InterruptedException {
+        if (by == null || inScreen == null) {
+            return null;
+        }
         long stopTime = waitOptions.calcStopTime();
         Node result = null;
         Request request = new Request();
@@ -40,10 +47,16 @@ public class Selector extends AbstractCommand<Response> {
     }
 
     public List<Node> find(Client client, By by) throws InterruptedException {
+        if (by == null) {
+            return Collections.emptyList();
+        }
         return find(client, by, true);
     }
 
     public List<Node> find(Client client, By by, Boolean inScreen) throws InterruptedException {
+        if (by == null || inScreen == null) {
+            return Collections.emptyList();
+        }
         long stopTime = waitOptions.calcStopTime();
         List<Node> nodes = new ArrayList<>();
         Request request = new Request();

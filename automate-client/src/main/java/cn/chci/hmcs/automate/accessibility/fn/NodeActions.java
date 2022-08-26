@@ -11,6 +11,9 @@ import lombok.extern.slf4j.Slf4j;
 public class NodeActions extends AbstractCommand<Response> {
 
     public boolean click(Client client, Node node) {
+        if (node == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("NodeActions", "click", new Class[]{String.class}, new Object[]{node.getCacheId()});
         request.setCommand(command);
@@ -19,6 +22,9 @@ public class NodeActions extends AbstractCommand<Response> {
     }
 
     public boolean longClick(Client client, Node node) {
+        if (node == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("NodeActions", "longClick", new Class[]{String.class}, new Object[]{node.getCacheId()});
         request.setCommand(command);
@@ -27,6 +33,9 @@ public class NodeActions extends AbstractCommand<Response> {
     }
 
     public boolean input(Client client, Node node, String text) {
+        if (node == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("NodeActions", "input", new Class[]{String.class, String.class}, new Object[]{node.getCacheId(), text});
         request.setCommand(command);
@@ -35,6 +44,9 @@ public class NodeActions extends AbstractCommand<Response> {
     }
 
     public boolean scrollUp(Client client, Node node) {
+        if (node == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("NodeActions", "scrollUp", new Class[]{String.class}, new Object[]{node.getCacheId()});
         request.setCommand(command);
@@ -43,6 +55,9 @@ public class NodeActions extends AbstractCommand<Response> {
     }
 
     public boolean scrollDown(Client client, Node node) {
+        if (node == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("NodeActions", "scrollDown", new Class[]{String.class}, new Object[]{node.getCacheId()});
         request.setCommand(command);

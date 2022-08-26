@@ -54,6 +54,9 @@ public class Global extends AbstractCommand<Response> {
     }
 
     public boolean setClipboardText(Client client, String text) {
+        if (text == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("Global", "setClipboardText", new Class[]{String.class}, new Object[]{text});
         request.setCommand(command);
@@ -62,6 +65,9 @@ public class Global extends AbstractCommand<Response> {
     }
 
     public boolean click(Client client, Point point) {
+        if (point == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("Global", "click", new Class[]{Point.class}, new Object[]{point});
         request.setCommand(command);
@@ -70,6 +76,9 @@ public class Global extends AbstractCommand<Response> {
     }
 
     public boolean longClick(Client client, Point point, Integer duration) {
+        if (point == null || duration == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("Global", "longClick", new Class[]{Point.class, Integer.class}, new Object[]{point, duration});
         request.setCommand(command);
@@ -78,6 +87,9 @@ public class Global extends AbstractCommand<Response> {
     }
 
     public boolean swipe(Client client, Point start, Point end, Integer duration) {
+        if (start == null || end == null || duration == null) {
+            return false;
+        }
         Request request = new Request();
         Command command = new Command("Global", "swipe", new Class[]{Point.class, Point.class, Integer.class}, new Object[]{start, end, duration});
         request.setCommand(command);
