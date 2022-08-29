@@ -95,7 +95,7 @@ public class NodeParser {
         int y0 = Integer.parseInt(xy0[1]);
         int x1 = Integer.parseInt(xy1[0]);
         int y1 = Integer.parseInt(xy1[1]);
-        rectangle = new Rectangle(x0, y0, y1 - y0, x1 - x0);
+        rectangle = new Rectangle(x0, y0, x1 - x0, y1 - y0);
         return rectangle;
     }
 

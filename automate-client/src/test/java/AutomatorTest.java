@@ -38,7 +38,7 @@ public class AutomatorTest {
     @Test
     void testFindOne() {
         // 桌面
-        Node node = bot.findOne(By.xpath("[]com.huawei.android.totemweather:id/widget_dual_single_city_layout"), false);
+        Node node = bot.findOne(By.xpath("(//*[@resource-id=\"com.ss.android.ugc.aweme:id/bkt\"])[1]//*[not(@content-desc=\"\")][1]"), false);
         log.info("node.text: {}", node.getText());
         log.info("node.rect: {}", node.getRect());
         log.info("node.children: {}", node.getChildren());
