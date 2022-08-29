@@ -5,6 +5,7 @@ import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
 import cn.chci.hmcs.automate.model.Rect;
 import cn.chci.hmcs.automate.socket.Client;
+import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
@@ -127,7 +128,14 @@ public class AndroidBot {
     }
 
     public String getClipboardText() {
-        return global.getClipboardText(client);
+        String currentInputMethod = AdbUtils.getInputMethod(udid);
+        try {
+            AdbUtils.setInputMethod("cn.chci.hmcs.automate/.AutomateIMEService", udid);
+            return global.getClipboardText(client);
+        } finally {
+            AdbUtils.setInputMethod(currentInputMethod, udid);
+        }
+
     }
 
     public boolean setClipboardText(String text) {

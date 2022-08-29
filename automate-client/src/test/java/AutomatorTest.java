@@ -115,7 +115,7 @@ public class AutomatorTest {
 
     @Test
     void testSetClipboardText() {
-        log.info("testSetClipboardText: {}", bot.setClipboardText("hello world"));
+        log.info("testSetClipboardText: {}", bot.setClipboardText(""));
     }
 
     @Test

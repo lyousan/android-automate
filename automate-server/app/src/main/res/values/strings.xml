@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Automate</string>
     <string name="accessibility_description">HMCS-ANDORID-AUTOMATE</string>
+    <string name="automate_ime_title">AUTOMATE-IME</string>
 </resources>

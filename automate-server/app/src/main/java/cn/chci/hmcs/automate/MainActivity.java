@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         init();
         // 启动socket服务端，端口是33579，客户端（PC）连接前记得连接数据线，然后通过adb进行端口转发
         Server.start();
+        ClipboardProvider clipboardProvider = (ClipboardProvider) beanContextHolder.getBean("clipboardProvider");
+        clipboardProvider.getClipboardText();
     }
 
     private void init() {
@@ -51,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         beanContextHolder.setBean("deviceInfoProvider", new DeviceInfoProvider(this));
         // 无障碍服务工具类
         beanContextHolder.setBean("accessibilityServiceUtils", new AccessibilityServiceUtils(this));
-        // 剪贴板操作，仅限安卓10以下
+        // 剪贴板操作，安卓10及10以上需要将automate输入法设置为默认输入法，但是automate输入法只是个空壳，没有界面，用完需要再换回正常的输入法，整个过程可以通过adb来实现
         beanContextHolder.setBean("clipboardProvider", new ClipboardProvider(this));
     }
 

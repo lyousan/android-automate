@@ -71,7 +71,7 @@ public class AdbUtils {
     public static void stopADB() {
         try {
             Process process = Runtime.getRuntime().exec("adb kill-server");
-            process.waitFor(20,TimeUnit.SECONDS);
+            process.waitFor(20, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
             log.error("关闭ADB服务时发生异常：", e);
         }
@@ -84,7 +84,7 @@ public class AdbUtils {
     public static void startADB() {
         try {
             Process process = Runtime.getRuntime().exec("adb start-server");
-            process.waitFor(20,TimeUnit.SECONDS);
+            process.waitFor(20, TimeUnit.SECONDS);
         } catch (IOException | InterruptedException e) {
             log.error("开启ADB服务时发生异常：", e);
         }
@@ -174,6 +174,21 @@ public class AdbUtils {
         } catch (IOException | InterruptedException e) {
             log.error("设置输入法时发生异常：{}", e);
         }
+    }
+
+    /**
+     * 获取当前输入法
+     *
+     * @param udid 设备序列号
+     */
+    public static String getInputMethod(String udid) {
+        try {
+            List<String> res = exec("adb -s " + udid + " shell settings get secure default_input_method");
+            return res.isEmpty() ? null : res.get(0);
+        } catch (IOException | InterruptedException e) {
+            log.error("获取输入法时发生异常：{}", e);
+        }
+        return null;
     }
 
     /**
@@ -318,7 +333,7 @@ public class AdbUtils {
     /**
      * @param: [file, config]
      * @return: boolean
-     * @description: 获取剪切板数据(需要再手机上提前安装https://github.com/majido/clipper)
+     * @description: 获取剪切板数据(需要再手机上提前安装https : / / github.com / majido / clipper)
      * # 用法
      * # am broadcast -a clipper.set -e text "this can be pasted now"
      * # am broadcast -a clipper.get
@@ -336,9 +351,6 @@ public class AdbUtils {
         }
         return "";
     }
-
-
-
 
 
     /**
@@ -450,7 +462,7 @@ public class AdbUtils {
         pb.redirectErrorStream(true);
         Process process = pb.start();
 //        Process process = Runtime.getRuntime().exec(new String[]{EXECUTOR, EXECUTOR_PARAM, command});  当adb本身有一些问题时（连接不稳定、连接超时、连接被拒绝等等情况），有可能会导致长时间的阻塞
-        process.waitFor(20,TimeUnit.SECONDS);
+        process.waitFor(20, TimeUnit.SECONDS);
         BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
         String len = null;
         while ((len = reader.readLine()) != null) {
