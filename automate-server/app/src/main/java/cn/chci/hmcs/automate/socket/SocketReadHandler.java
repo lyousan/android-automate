@@ -34,7 +34,11 @@ public class SocketReadHandler implements Runnable {
                 Server.emit(id, request);
             }
         } catch (IOException e) {
-            Log.e(LOG_TAG, "SocketReadHandler error: ", e);
+            if (socket.isClosed()) {
+                Server.close(id);
+            } else {
+                Log.e(LOG_TAG, "SocketReadHandler error: ", e);
+            }
         }
     }
 

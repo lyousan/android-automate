@@ -53,6 +53,10 @@ public class AndroidBot {
         return androidBot;
     }
 
+    public void close() {
+        client.close();
+    }
+
     public String dump() {
         return dump.dump(client);
     }

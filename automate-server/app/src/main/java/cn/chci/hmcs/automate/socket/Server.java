@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.chci.hmcs.automate.dto.Request;
@@ -23,7 +24,9 @@ public class Server {
     /**
      * 缓存socket连接
      */
-    private static final Map<Integer, Socket> CACHE = new HashMap<>();
+    static final Map<Integer, Socket> CLIENT_CACHE = new HashMap<>();
+    static final Map<Integer, Future<?>> READER_CACHE = new HashMap<>();
+    static final Map<Integer, Future<?>> WRITER_CACHE = new HashMap<>();
     /**
      * 缓存管道
      */
@@ -47,15 +50,15 @@ public class Server {
                 int id = count.addAndGet(1);
                 Log.d(LOG_TAG, "start: 连接到客户端[" + id + "]");
                 // 这个socket缓存暂时还没用，后续可以单开一个线程定时去清理已经断开的socket
-                CACHE.put(id, client);
+                CLIENT_CACHE.put(id, client);
                 // 绑定上管道流，由于socket的读取与输出是两个单独的线程来操作的，所以这里通过管道这个中间介质来让这两个线程通讯
                 PipedOutputStream pipedOutputStream = new PipedOutputStream();
                 PipedInputStream pipedInputStream = new PipedInputStream();
                 pipedOutputStream.connect(pipedInputStream);
                 PIPE_OUT.put(id, pipedOutputStream);
                 PIPE_IN.put(id, pipedInputStream);
-                EXECUTOR_SERVICE.submit(new SocketReadHandler(id, client));
-                EXECUTOR_SERVICE.submit(new SocketWriteHandler(id, client));
+                READER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketReadHandler(id, client)));
+                WRITER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketWriteHandler(id, client)));
             }
         });
     }
@@ -68,6 +71,10 @@ public class Server {
      */
     static void emit(Integer id, Request request) {
         try {
+            if (request.getCommand().getTargetName().equals("close")) {
+                close(id);
+                return;
+            }
             // 执行Command
             Response response = Executor.execute(request.getCommand());
             response.setRequestId(request.getId());
@@ -84,8 +91,22 @@ public class Server {
             pipedOutputStream.write(tmp);
             pipedOutputStream.flush();
         } catch (Exception e) {
-            e.printStackTrace();
+            if (CLIENT_CACHE.get(id).isClosed()) {
+                close(id);
+            } else {
+                Log.e(LOG_TAG, "Server#emit error: ", e);
+            }
         }
     }
 
+    static void close(Integer id) {
+        if (CLIENT_CACHE.containsKey(id)) {
+            Log.w(LOG_TAG, "client[" + id + "] will be closed");
+            CLIENT_CACHE.remove(id);
+            READER_CACHE.remove(id).cancel(true);
+            WRITER_CACHE.remove(id).cancel(true);
+        } else {
+            Log.w(LOG_TAG, "client[" + id + "] has be closed");
+        }
+    }
 }

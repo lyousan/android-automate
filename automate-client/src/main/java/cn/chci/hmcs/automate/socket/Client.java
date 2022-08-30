@@ -1,6 +1,7 @@
 package cn.chci.hmcs.automate.socket;
 
 import cn.chci.hmcs.automate.dto.Request;
+import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
@@ -23,6 +24,7 @@ public class Client {
     final PipedInputStream pipedIn = new PipedInputStream();
     final PipedOutputStream pipedOut = new PipedOutputStream();
     final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
+    Socket socket = null;
 
     public void start(String udid) throws IOException, InterruptedException {
         // 关闭automate 如果要对app进行debug的话需要注释关闭automate的这一行
@@ -35,13 +37,12 @@ public class Client {
         AdbUtils.exec("adb -s " + udid + " shell am start " + PACKAGE_NAME + "/.MainActivity");
         // 回退app
         AdbUtils.exec("adb -s " + udid + " shell input keyevent 4");
-//        Thread.sleep(3000);
-        Socket server = new Socket("127.0.0.1", 33579);
+        socket = new Socket("127.0.0.1", 33579);
         pipedOut.connect(pipedIn);
-        log.info("连接已建立......");
+        log.info("the connection with Automate established");
         // 开启两个独立的线程去处理读和写
-        new Thread(new SocketReadHandler(this, server), "ReadHandler-" + udid).start();
-        new Thread(new SocketWriteHandler(this, server), "WriteHandler-" + udid).start();
+        new Thread(new SocketReadHandler(this, socket), "ReadHandler-" + udid).start();
+        new Thread(new SocketWriteHandler(this, socket), "WriteHandler-" + udid).start();
     }
 
     public void emit(Request request) {
@@ -53,7 +54,22 @@ public class Client {
             writer.flush();
             log.debug("send request: {}\n", JSON.toJSONString(request, JSONWriter.Feature.PrettyFormat));
         } catch (Exception e) {
-            log.error("Client#emit", e);
+            if (socket.isClosed()) {
+                log.warn("socket of Automate closed");
+            } else {
+                log.error("Client#emit error:", e);
+            }
+        }
+    }
+
+    public void close() {
+        try {
+            Request request = new Request();
+            request.setCommand(new Command("close", null, null, null));
+            emit(request);
+            socket.close();
+        } catch (IOException e) {
+            log.error("close Automate error:", e);
         }
     }
 }

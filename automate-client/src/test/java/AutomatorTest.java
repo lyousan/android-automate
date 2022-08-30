@@ -33,6 +33,7 @@ public class AutomatorTest {
     void testDump() {
         String dump = bot.dump();
         log.info("dump: {}", dump);
+        bot.close();
     }
 
     @Test

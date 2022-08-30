@@ -78,7 +78,11 @@ public class SocketReadHandler implements Runnable {
                 ResponseListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {
-            log.error("socket读取线程发生异常", e);
+            if (socket.isClosed()) {
+                log.warn("socket of Automate closed");
+            } else {
+                log.error("socketReader error:", e);
+            }
         }
     }
 

@@ -36,7 +36,11 @@ public class SocketWriteHandler implements Runnable {
 //                log.debug("send request: {}", JSON.toJSONString(JSON.parseObject(msg, Request.class), JSONWriter.Feature.PrettyFormat));
             }
         } catch (Exception e) {
-            log.error("socket写入线程发生异常", e);
+            if (socket.isClosed()) {
+                log.warn("socket of Automate closed");
+            } else {
+                log.error("socketWriter error:", e);
+            }
         }
     }
 }
