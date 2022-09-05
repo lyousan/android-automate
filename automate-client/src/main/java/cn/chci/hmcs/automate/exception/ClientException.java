@@ -5,7 +5,7 @@ package cn.chci.hmcs.automate.exception;
  * @date 2022-08-02 20:55
  * @description
  **/
-public class ClientException extends AutomatorException{
+public class ClientException extends AutomateException {
     public ClientException() {
         super();
     }

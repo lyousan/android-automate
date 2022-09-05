@@ -61,48 +61,36 @@ public class AndroidBot {
         return dump.dump(client);
     }
 
+    @SneakyThrows
     public Node findOne(By by) {
         if (by == null) {
             return null;
         }
-        try {
-            return selector.findOne(client, by);
-        } catch (InterruptedException e) {
-            return null;
-        }
+        return selector.findOne(client, by);
     }
 
+    @SneakyThrows
     public Node findOne(By by, boolean inScreen) {
         if (by == null) {
             return null;
         }
-        try {
-            return selector.findOne(client, by, inScreen);
-        } catch (InterruptedException e) {
-            return null;
-        }
+        return selector.findOne(client, by, inScreen);
     }
 
+    @SneakyThrows
     public List<Node> find(By by) {
         if (by == null) {
             return null;
         }
-        try {
-            return selector.find(client, by);
-        } catch (InterruptedException e) {
-            return Collections.emptyList();
-        }
+        return selector.find(client, by);
     }
 
+    @SneakyThrows
     public List<Node> find(By by, boolean inScreen) {
         if (by == null) {
             return null;
         }
-        try {
             return selector.find(client, by, inScreen);
-        } catch (InterruptedException e) {
-            return Collections.emptyList();
-        }
     }
 
     public void setSelectWaitOptions(WaitOptions waitOptions) {

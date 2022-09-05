@@ -101,12 +101,12 @@ public class Server {
 
     static void close(Integer id) {
         if (CLIENT_CACHE.containsKey(id)) {
-            Log.w(LOG_TAG, "client[" + id + "] will be closed");
+            Log.w(LOG_TAG, "client[" + id + "] will been closed");
             CLIENT_CACHE.remove(id);
             READER_CACHE.remove(id).cancel(true);
             WRITER_CACHE.remove(id).cancel(true);
         } else {
-            Log.w(LOG_TAG, "client[" + id + "] has be closed");
+            Log.w(LOG_TAG, "client[" + id + "] has been closed");
         }
     }
 }

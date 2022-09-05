@@ -1,6 +1,7 @@
 package cn.chci.hmcs.automate.socket;
 
 import cn.chci.hmcs.automate.dto.Request;
+import cn.chci.hmcs.automate.exception.AutomateClosedException;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import com.alibaba.fastjson2.JSON;
@@ -71,5 +72,9 @@ public class Client {
         } catch (IOException e) {
             log.error("close Automate error:", e);
         }
+    }
+
+    public boolean isClosed() {
+        return socket == null || socket.isClosed();
     }
 }

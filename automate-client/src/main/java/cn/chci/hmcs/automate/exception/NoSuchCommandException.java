@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automate.exception;
 
-public class NoSuchCommandException extends AutomatorException {
+public class NoSuchCommandException extends ClientException {
     public NoSuchCommandException() {
         super();
         code = 401;
