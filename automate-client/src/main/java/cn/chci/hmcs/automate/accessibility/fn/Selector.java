@@ -13,12 +13,18 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
 
 @Slf4j
 public class Selector extends AbstractCommand<Response> {
     @Setter
     @Getter
-    private WaitOptions waitOptions = WaitOptions.DEFAULT_WAIT_OPTIONS();
+    private Wait wait;
+
+    public Selector(Wait wait) {
+        this.wait = wait;
+    }
 
     public Node findOne(Client client, By by) throws InterruptedException {
         if (by == null) {
@@ -31,19 +37,16 @@ public class Selector extends AbstractCommand<Response> {
         if (by == null || inScreen == null) {
             return null;
         }
-        long stopTime = waitOptions.calcStopTime();
-        Node result = null;
-        Request request = new Request();
-        Command command = new Command("Selector", "findOne", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
-        request.setCommand(command);
-        do {
-            Response response = send(client, request);
+        return wait.implicitUntil(c -> {
+            Request request = new Request();
+            Command command = new Command("Selector", "findOne", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
+            request.setCommand(command);
+            Response response = send(c, request);
             if (response != null && response.getData() != null) {
-                result = NodeParser.parse(response.getData().toString(), client);
+                return NodeParser.parse(response.getData().toString(), c);
             }
-            waitOptions.waiting();
-        } while (result == null && stopTime >= System.currentTimeMillis());
-        return result;
+            return null;
+        }, null);
     }
 
     public List<Node> find(Client client, By by) throws InterruptedException {
@@ -57,21 +60,19 @@ public class Selector extends AbstractCommand<Response> {
         if (by == null || inScreen == null) {
             return Collections.emptyList();
         }
-        long stopTime = waitOptions.calcStopTime();
-        List<Node> nodes = new ArrayList<>();
-        Request request = new Request();
-        Command command = new Command("Selector", "find", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
-        request.setCommand(command);
-        do {
+        return wait.implicitUntil(c -> {
+            List<Node> nodes = new ArrayList<>();
+            Request request = new Request();
+            Command command = new Command("Selector", "find", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
+            request.setCommand(command);
             Response response = send(client, request);
             if (response != null && response.getData() instanceof List) {
                 for (Object s : ((List<?>) response.getData())) {
                     nodes.add(NodeParser.parse(s.toString(), client));
                 }
             }
-            waitOptions.waiting();
-        } while (nodes.isEmpty() && stopTime >= System.currentTimeMillis());
-        return nodes;
+            return nodes;
+        }, Collections.emptyList());
     }
 
 }

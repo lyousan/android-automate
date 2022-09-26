@@ -15,40 +15,37 @@ public class WaitOptions {
     public static final long DEFAULT_TIMEOUT = 5L;
     public static final long DEFAULT_INTERVAL = 1L;
     public static final TimeUnit DEFAULT_TIMEUNIT = TimeUnit.SECONDS;
+    public static final WaitOptions DEFAULT_WAIT_OPTIONS = new WaitOptions(DEFAULT_TIMEOUT, DEFAULT_INTERVAL, DEFAULT_TIMEUNIT);
     @Setter
     @Getter
-    private long implicitTimeout = DEFAULT_TIMEOUT;
+    private long timeout = DEFAULT_TIMEOUT;
     @Setter
     @Getter
     private long interval = DEFAULT_INTERVAL;
     @Setter
     @Getter
-    private TimeUnit implicitTimeUnit = DEFAULT_TIMEUNIT;
+    private TimeUnit timeUnit = DEFAULT_TIMEUNIT;
 
     public WaitOptions() {
     }
 
-    public WaitOptions(long implicitTimeout, long interval, TimeUnit implicitTimeUnit) {
-        this.implicitTimeout = implicitTimeout;
+    public WaitOptions(long timeout, long interval, TimeUnit timeUnit) {
+        this.timeout = timeout;
         this.interval = interval;
-        this.implicitTimeUnit = implicitTimeUnit;
+        this.timeUnit = timeUnit;
     }
 
-    public static WaitOptions DEFAULT_WAIT_OPTIONS() {
-        return new WaitOptions(DEFAULT_TIMEOUT, DEFAULT_INTERVAL, DEFAULT_TIMEUNIT);
-    }
-
-    public long calcStopTime() {
-        return System.currentTimeMillis() + implicitTimeUnit.toMillis(implicitTimeout);
+    long calcStopTime() {
+        return System.currentTimeMillis() + timeUnit.toMillis(timeout);
     }
 
     @SneakyThrows
-    public void waiting() {
-        implicitTimeUnit.sleep(interval);
+    void waiting() {
+        timeUnit.sleep(interval);
     }
 
     @Override
     public String toString() {
-        return String.format("timeout: %s, interval: %s, unit: %s", implicitTimeout, interval, implicitTimeUnit);
+        return String.format("timeout: %s, interval: %s, unit: %s", timeout, interval, timeUnit);
     }
 }

@@ -1,4 +1,6 @@
 import cn.chci.hmcs.automate.accessibility.fn.By;
+import cn.chci.hmcs.automate.accessibility.fn.Wait;
+import cn.chci.hmcs.automate.accessibility.fn.WaitOptions;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
@@ -11,6 +13,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.awt.*;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author 有三
@@ -38,8 +41,11 @@ public class AutomatorTest {
 
     @Test
     void testFindOne() {
+//        bot.setSelectorWaitOption(new WaitOptions(3, 1, TimeUnit.SECONDS));
         // 桌面
-        Node node = bot.findOne(By.xpath("(//*[@resource-id=\"com.ss.android.ugc.aweme:id/bkt\"])[1]//*[not(@content-desc=\"\")][1]"), false);
+        Wait wait = new Wait(bot, new WaitOptions(10, 1, TimeUnit.SECONDS));
+        Node node = wait.until(b -> b.findOne(By.textContains("微信")),new Node());
+//        Node node = bot.findOne(By.textEquals("微信"), true);
         log.info("node.text: {}", node.getText());
         log.info("node.rect: {}", node.getRect());
         log.info("node.children: {}", node.getChildren());

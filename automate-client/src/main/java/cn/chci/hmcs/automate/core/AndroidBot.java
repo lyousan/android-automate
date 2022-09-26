@@ -43,7 +43,7 @@ public class AndroidBot {
         client = new Client(udid, pcPort, androidPort);
         global = new Global();
         activityInfo = new ActivityInfo();
-        selector = new Selector();
+        selector = new Selector(new Wait(client, WaitOptions.DEFAULT_WAIT_OPTIONS));
         dump = new Dump();
         device = new Device();
     }
@@ -105,12 +105,12 @@ public class AndroidBot {
         return selector.find(client, by, inScreen);
     }
 
-    public void setSelectWaitOptions(WaitOptions waitOptions) {
-        selector.setWaitOptions(waitOptions);
+    public void setSelectorWaitOption(WaitOptions waitOptions) {
+        selector.setWait(new Wait(client, waitOptions));
     }
 
-    public WaitOptions getSelectWaitOptions() {
-        return selector.getWaitOptions();
+    public WaitOptions getSelectorWaitOption() {
+        return selector.getWait().getWaitOptions();
     }
 
     //////////////////////////////////////////////////

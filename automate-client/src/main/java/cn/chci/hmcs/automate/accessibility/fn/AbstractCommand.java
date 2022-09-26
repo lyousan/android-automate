@@ -18,6 +18,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -32,7 +34,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     protected static final TimeUnit DEFAULT_TIMEOUT_UNIT = TimeUnit.SECONDS;
     protected Long timeout = DEFAULT_TIMEOUT;
     protected TimeUnit timeoutUnit = DEFAULT_TIMEOUT_UNIT;
-    protected CountDownLatch cdl = new CountDownLatch(1);
+    private CountDownLatch countDownLatch = new CountDownLatch(1);
     protected final Map<String, T> RESULT = new HashMap<>();
     protected final ExceptionHandler DEFAULT_EXCEPTION_HANDLER = this::defaultOnException;
     protected final ResponseHandler DEFAULT_RESPONSE_HANDLER = this::defaultOnResponse;
@@ -69,7 +71,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
             // 发送请求
             client.emit(request);
             // 等待异步响应
-            if (!cdl.await(DEFAULT_TIMEOUT, DEFAULT_TIMEOUT_UNIT)) {
+            if (!countDownLatch.await(DEFAULT_TIMEOUT, DEFAULT_TIMEOUT_UNIT)) {
                 // 超时
                 throw new TimeoutException("响应超时");
             }
@@ -84,7 +86,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
             // 注销监听，移除本次响应，重置cdl（不重置的话下一次请求就不会阻塞等待响应了，会导致响应为null）
             ResponseListenerContextHolder.remove(request.getId());
             RESULT.remove(request.getId());
-            cdl = new CountDownLatch(1);
+            countDownLatch = new CountDownLatch(1);
         }
         return null;
     }
@@ -134,7 +136,7 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     @Override
     public void onReceive(T t) {
         RESULT.put(t.getRequestId(), t);
-        cdl.countDown();
+        countDownLatch.countDown();
     }
 
 }
