@@ -23,7 +23,7 @@ public class WeChatTest {
 
     @BeforeEach
     void init() {
-        bot = AndroidBot.createAndroidBotAndConnect(udid);
+        bot = AndroidBot.createAndConnect(udid);
         log.info("init");
     }
 

@@ -26,7 +26,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndroidBotAndConnect("5EN0219529000872");
+        bot = AndroidBot.createAndConnect("5EN0219529000872");
     }
 
     @Test

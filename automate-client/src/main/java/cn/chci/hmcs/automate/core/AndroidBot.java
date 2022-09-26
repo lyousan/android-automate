@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
+import java.net.InetSocketAddress;
+import java.net.Socket;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,9 +38,9 @@ public class AndroidBot {
     private final String udid;
 
 
-    private AndroidBot(String udid) {
+    private AndroidBot(String udid, Integer pcPort, Integer androidPort) {
         this.udid = udid;
-        client = new Client();
+        client = new Client(udid, pcPort, androidPort);
         global = new Global();
         activityInfo = new ActivityInfo();
         selector = new Selector();
@@ -47,9 +49,19 @@ public class AndroidBot {
     }
 
     @SneakyThrows
-    public static AndroidBot createAndroidBotAndConnect(String udid) {
-        AndroidBot androidBot = new AndroidBot(udid);
-        androidBot.client.start(androidBot.udid);
+    public static AndroidBot createAndConnect(String udid) {
+        return createAndConnect(udid, false);
+    }
+
+    @SneakyThrows
+    public static AndroidBot createAndConnect(String udid, boolean closeExistServer) {
+        InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
+        Socket temp = new Socket();
+        temp.bind(inetSocketAddress);
+        int pcPort = temp.getLocalPort();
+        temp.close();
+        AndroidBot androidBot = new AndroidBot(udid, pcPort, Client.DEFAULT_ANDROID_PORT);
+        androidBot.client.connect(closeExistServer);
         return androidBot;
     }
 
@@ -90,7 +102,7 @@ public class AndroidBot {
         if (by == null) {
             return null;
         }
-            return selector.find(client, by, inScreen);
+        return selector.find(client, by, inScreen);
     }
 
     public void setSelectWaitOptions(WaitOptions waitOptions) {
