@@ -1,9 +1,8 @@
 package cn.chci.hmcs.automate.socket;
 
 import cn.chci.hmcs.automate.dto.Request;
-import cn.chci.hmcs.automate.exception.AutomateClosedException;
 import cn.chci.hmcs.automate.model.Command;
-import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
+import cn.chci.hmcs.automate.utils.AdbUtils;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import lombok.Getter;

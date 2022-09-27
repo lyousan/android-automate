@@ -67,7 +67,6 @@ public class Wait {
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
             while (System.currentTimeMillis() < stopTime) {
-                log.warn("util: {}", waitOptions);
                 V value = isTrue.apply(bot);
                 // 为true或任意非null值时正常返回
                 if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
@@ -116,7 +115,6 @@ public class Wait {
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
             while (System.currentTimeMillis() < stopTime) {
-                log.warn("implicitUntil: {}", waitOptions);
                 V value = isTrue.apply(client);
                 // 为true或任意非null值时正常返回
                 if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {

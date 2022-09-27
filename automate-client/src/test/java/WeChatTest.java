@@ -1,7 +1,7 @@
 import cn.chci.hmcs.automate.accessibility.fn.By;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
-import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
+import cn.chci.hmcs.automate.utils.AdbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,4 +1,4 @@
-package cn.chci.hmcs.common.toolkit.utils;
+package cn.chci.hmcs.automate.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.dom4j.Document;

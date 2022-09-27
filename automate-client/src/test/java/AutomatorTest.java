@@ -4,13 +4,11 @@ import cn.chci.hmcs.automate.accessibility.fn.WaitOptions;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
-import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.awt.*;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;

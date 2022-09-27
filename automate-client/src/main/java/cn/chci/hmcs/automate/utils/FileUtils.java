@@ -1,4 +1,4 @@
-package cn.chci.hmcs.common.toolkit.utils;
+package cn.chci.hmcs.automate.utils;
 
 import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import lombok.extern.slf4j.Slf4j;

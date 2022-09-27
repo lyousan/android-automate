@@ -5,14 +5,13 @@ import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
 import cn.chci.hmcs.automate.model.Rect;
 import cn.chci.hmcs.automate.socket.Client;
-import cn.chci.hmcs.common.toolkit.utils.AdbUtils;
+import cn.chci.hmcs.automate.utils.AdbUtils;
 import lombok.Getter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.net.InetSocketAddress;
 import java.net.Socket;
-import java.util.Collections;
 import java.util.List;
 
 /**
