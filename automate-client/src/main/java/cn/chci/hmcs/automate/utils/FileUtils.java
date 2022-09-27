@@ -1,6 +1,5 @@
 package cn.chci.hmcs.automate.utils;
 
-import com.sun.org.apache.xerces.internal.impl.dv.util.HexBin;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
@@ -11,7 +10,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributeView;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.security.MessageDigest;
 import java.util.*;
 
 /**

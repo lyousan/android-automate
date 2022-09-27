@@ -42,7 +42,7 @@ public class AutomatorTest {
 //        bot.setSelectorWaitOption(new WaitOptions(3, 1, TimeUnit.SECONDS));
         // 桌面
         Wait wait = new Wait(bot, new WaitOptions(10, 1, TimeUnit.SECONDS));
-        Node node = wait.until(b -> b.findOne(By.textContains("微信")),new Node());
+        Node node = wait.until(b -> b.findOne(By.textContains("微信")), new Node());
 //        Node node = bot.findOne(By.textEquals("微信"), true);
         log.info("node.text: {}", node.getText());
         log.info("node.rect: {}", node.getRect());
