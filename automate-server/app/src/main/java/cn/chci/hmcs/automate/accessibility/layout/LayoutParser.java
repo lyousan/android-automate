@@ -87,7 +87,7 @@ public class LayoutParser {
         AccessibilityNodeInfo node = nodeInfo.getNode();
         node.getBoundsInScreen(rect);
         builder.append(" ").append("resource-id=\"").append(node.getViewIdResourceName() == null ? "" : replaceInvalidCharacter(node.getViewIdResourceName())).append("\"")
-                .append(" ").append("class=\"").append(replaceInvalidCharacter(node.getClassName().toString())).append("\"")
+                .append(" ").append("class=\"").append(node.getClassName() == null ? "" : replaceInvalidCharacter(node.getClassName().toString())).append("\"")
                 .append(" ").append("text=\"").append(node.getText() == null ? "" : replaceInvalidCharacter(node.getText().toString())).append("\"")
                 .append(" ").append("content-desc=\"").append(node.getContentDescription() == null ? "" : replaceInvalidCharacter(node.getContentDescription().toString())).append("\"")
                 .append(" ").append("checkable=\"").append(node.isCheckable()).append("\"")
