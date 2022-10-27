@@ -27,7 +27,28 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndConnect("SKDYJJ7DR47DS879");
+//        bot = AndroidBot.createAndConnect("SKDYJJ7DR47DS879");
+    }
+
+
+    @Test
+    void test() throws InterruptedException {
+        for (int i = 0; i < 20; i++) {
+            int finalI = i;
+            Thread thread = new Thread(() -> {
+                AndroidBot bot = AndroidBot.createAndConnect("SKDYJJ7DR47DS879");
+                log.info("i ==> {}", finalI);
+                String dump = bot.dump();
+                log.info("dump ==> {}", dump);
+                String currentActivity = bot.currentActivity();
+                log.info("currentActivity ==> {}", currentActivity);
+                if (finalI % 2 == 0) {
+                    bot.close();
+                }
+            }, i + "-thread");
+            thread.start();
+            thread.join();
+        }
     }
 
     @Test

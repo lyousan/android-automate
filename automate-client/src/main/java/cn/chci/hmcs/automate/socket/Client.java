@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.concurrent.*;
 
 /**
  * @Author 有三
@@ -35,6 +36,7 @@ public class Client {
     final PipedOutputStream pipedOut = new PipedOutputStream();
     final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
     Socket socket = null;
+    final ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
 
     public Client(String udid) {
         this(udid, DEFAULT_PC_PORT, DEFAULT_ANDROID_PORT);
@@ -63,8 +65,8 @@ public class Client {
         pipedOut.connect(pipedIn);
         log.info("the connection with Automate established pc:port:{} android:port:{}", pcPort, androidPort);
         // 开启两个独立的线程去处理读和写
-        new Thread(new SocketReadHandler(this, socket), "AutomateReader-" + udid).start();
-        new Thread(new SocketWriteHandler(this, socket), "AutomateWriter-" + udid).start();
+        executorService.submit(new Thread(new SocketReadHandler(this, socket), "AutomateReader-" + udid));
+        executorService.submit(new Thread(new SocketWriteHandler(this, socket), "AutomateWriter-" + udid));
     }
 
     public void emit(Request request) {
@@ -90,6 +92,7 @@ public class Client {
             request.setCommand(new Command("close", null, null, null));
             emit(request);
             socket.close();
+            executorService.shutdownNow();
             log.warn("Automate connection closed");
         } catch (IOException e) {
             log.error("close Automate error:", e);

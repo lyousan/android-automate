@@ -1,6 +1,9 @@
 package cn.chci.hmcs.automate.socket;
 
 import android.util.Log;
+import cn.chci.hmcs.automate.accessibility.fn.Executor;
+import cn.chci.hmcs.automate.dto.Request;
+import cn.chci.hmcs.automate.dto.Response;
 
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
@@ -9,18 +12,15 @@ import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Objects;
+import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import cn.chci.hmcs.automate.dto.Request;
-import cn.chci.hmcs.automate.dto.Response;
-import cn.chci.hmcs.automate.accessibility.fn.Executor;
 
 public class Server {
     private static final String LOG_TAG = "Server";
-    private static final ExecutorService EXECUTOR_SERVICE = Executors.newCachedThreadPool();
+    private static final ExecutorService EXECUTOR_SERVICE = new ThreadPoolExecutor(0, Integer.MAX_VALUE,
+            0L, TimeUnit.SECONDS,
+            new SynchronousQueue<Runnable>());
     /**
      * 缓存socket连接
      */
@@ -36,29 +36,40 @@ public class Server {
      * 计数器，用来给socket分配id
      */
     private static final AtomicInteger count = new AtomicInteger(0);
+    private static ServerSocket serverSocket = null;
 
     private Server() {
     }
 
     public static void start() {
+        if (serverSocket != null) {
+            Log.d(LOG_TAG, "start: Server has been started");
+            return;
+        }
         // 在单独的线程中启动，防止阻塞主线程
         EXECUTOR_SERVICE.submit(() -> {
             Thread.currentThread().setName("Server");
-            ServerSocket serverSocket = new ServerSocket(33579);
-            while (true) {
-                Socket client = serverSocket.accept();
-                int id = count.addAndGet(1);
-                Log.d(LOG_TAG, "start: 连接到客户端[" + id + "]");
-                // 这个socket缓存暂时还没用，后续可以单开一个线程定时去清理已经断开的socket
-                CLIENT_CACHE.put(id, client);
-                // 绑定上管道流，由于socket的读取与输出是两个单独的线程来操作的，所以这里通过管道这个中间介质来让这两个线程通讯
-                PipedOutputStream pipedOutputStream = new PipedOutputStream();
-                PipedInputStream pipedInputStream = new PipedInputStream();
-                pipedOutputStream.connect(pipedInputStream);
-                PIPE_OUT.put(id, pipedOutputStream);
-                PIPE_IN.put(id, pipedInputStream);
-                READER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketReadHandler(id, client)));
-                WRITER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketWriteHandler(id, client)));
+            try (ServerSocket ss = new ServerSocket(33579)) {
+                serverSocket = ss;
+                while (true) {
+                    Socket client = serverSocket.accept();
+                    int id = count.addAndGet(1);
+                    Log.d(LOG_TAG, "start: 连接到客户端[" + id + "]");
+                    // 这个socket缓存暂时还没用，后续可以单开一个线程定时去清理已经断开的socket
+                    CLIENT_CACHE.put(id, client);
+                    // 绑定上管道流，由于socket的读取与输出是两个单独的线程来操作的，所以这里通过管道这个中间介质来让这两个线程通讯
+                    PipedOutputStream pipedOutputStream = new PipedOutputStream();
+                    PipedInputStream pipedInputStream = new PipedInputStream();
+                    pipedOutputStream.connect(pipedInputStream);
+                    PIPE_OUT.put(id, pipedOutputStream);
+                    PIPE_IN.put(id, pipedInputStream);
+                    READER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketReadHandler(id, client)));
+                    WRITER_CACHE.put(id, EXECUTOR_SERVICE.submit(new SocketWriteHandler(id, client)));
+                }
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "start error: ", e);
+            } finally {
+                serverSocket = null;
             }
         });
     }
@@ -88,10 +99,13 @@ public class Server {
             String compressedSizeStr = String.valueOf(compressed.length);
             System.arraycopy(compressedSizeStr.getBytes(), 0, tmp, 0, compressedSizeStr.length());
             System.arraycopy(compressed, 0, tmp, 8, compressed.length);
-            pipedOutputStream.write(tmp);
-            pipedOutputStream.flush();
+            if (pipedOutputStream != null) {
+                pipedOutputStream.write(tmp);
+                pipedOutputStream.flush();
+            }
         } catch (Exception e) {
-            if (CLIENT_CACHE.get(id).isClosed()) {
+            Socket socket = CLIENT_CACHE.get(id);
+            if (socket != null && !socket.isClosed()) {
                 close(id);
             } else {
                 Log.e(LOG_TAG, "Server#emit error: ", e);
@@ -102,9 +116,15 @@ public class Server {
     static void close(Integer id) {
         if (CLIENT_CACHE.containsKey(id)) {
             Log.w(LOG_TAG, "client[" + id + "] will been closed");
-            CLIENT_CACHE.remove(id);
-            READER_CACHE.remove(id).cancel(true);
-            WRITER_CACHE.remove(id).cancel(true);
+            try {
+                Objects.requireNonNull(CLIENT_CACHE.remove(id)).close();
+                Objects.requireNonNull(PIPE_IN.remove(id)).close();
+                Objects.requireNonNull(PIPE_OUT.remove(id)).close();
+                Objects.requireNonNull(READER_CACHE.remove(id)).cancel(true);
+                Objects.requireNonNull(WRITER_CACHE.remove(id)).cancel(true);
+            } catch (Exception e) {
+                Log.e(LOG_TAG, "close error: ", e);
+            }
         } else {
             Log.w(LOG_TAG, "client[" + id + "] has been closed");
         }

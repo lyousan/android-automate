@@ -43,6 +43,10 @@ public class Wait {
         this.WORKER = Executors.newSingleThreadExecutor(r -> new Thread(r, "WaitWorker-" + client.getUdid()));
     }
 
+    public void close() {
+        WORKER.shutdownNow();
+    }
+
     /*public <V> V until(Function<? super AndroidBot, V> isTrue) {
         long stopTime = waitOptions.calcStopTime();
         while (System.currentTimeMillis() < stopTime) {

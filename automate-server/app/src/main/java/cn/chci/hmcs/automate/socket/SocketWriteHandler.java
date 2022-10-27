@@ -57,11 +57,9 @@ public class SocketWriteHandler implements Runnable {
                 out.flush();
             }
         } catch (Exception e) {
-            if (socket.isClosed()) {
-                Server.close(id);
-            } else {
-                Log.e(LOG_TAG, "SocketWriteHandler error: ", e);
-            }
+            Log.e(LOG_TAG, "SocketWriteHandler error: ", e);
+        } finally {
+            Server.close(id);
         }
     }
 }

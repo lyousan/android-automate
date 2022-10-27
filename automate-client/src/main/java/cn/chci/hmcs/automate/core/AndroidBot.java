@@ -66,6 +66,7 @@ public class AndroidBot {
 
     public void close() {
         client.close();
+        selector.getWait().close();
     }
 
     public String dump() {

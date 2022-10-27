@@ -8,14 +8,12 @@ import android.content.Context;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
+import cn.chci.hmcs.automate.accessibility.AccessibilityEventDelegate;
+import cn.chci.hmcs.automate.accessibility.layout.LayoutInspector;
+import cn.chci.hmcs.automate.utils.BeanContextHolder;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import cn.chci.hmcs.automate.accessibility.AccessibilityEventDelegate;
-import cn.chci.hmcs.automate.accessibility.activity.ActivityInfoProvider;
-import cn.chci.hmcs.automate.accessibility.layout.LayoutInspector;
-import cn.chci.hmcs.automate.utils.BeanContextHolder;
 
 public class MyAccessibilityService extends AccessibilityService {
     private static final String LOG_TAG = "MyAccessibilityService";
@@ -74,16 +72,20 @@ public class MyAccessibilityService extends AccessibilityService {
      * @return
      */
     public static boolean isServiceON(Context context, String className) {
-        ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
-        List<ActivityManager.RunningServiceInfo> runningServices = activityManager.getRunningServices(100);
-        if (runningServices.isEmpty()) {
-            return false;
-        }
-        for (int i = 0; i < runningServices.size(); i++) {
-            ComponentName service = runningServices.get(i).service;
-            if (service.getClassName().contains(className)) {
-                return true;
+        try {
+            ActivityManager activityManager = (ActivityManager) context.getSystemService(ACTIVITY_SERVICE);
+            List<ActivityManager.RunningServiceInfo> runningServices = activityManager.getRunningServices(100);
+            if (runningServices.isEmpty()) {
+                return false;
             }
+            for (int i = 0; i < runningServices.size(); i++) {
+                ComponentName service = runningServices.get(i).service;
+                if (service.getClassName().contains(className)) {
+                    return true;
+                }
+            }
+        } catch (Exception e) {
+            Log.e(LOG_TAG, "isServiceON error: ",e );
         }
         return false;
     }
