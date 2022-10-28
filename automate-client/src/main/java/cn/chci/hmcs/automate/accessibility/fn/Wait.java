@@ -66,10 +66,12 @@ public class Wait {
     }
 
     @SneakyThrows
-    public <V> V until(Function<? super AndroidBot, V> isTrue, V defaultValue) {
+    public <V> V until(Function<? super AndroidBot, V> isTrue,V defaultValue) {
+        final V result = defaultValue;
         cdl = new CountDownLatch(1);
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
+            // 这个循环条件不能省，不然会导致这个子线程一直不结束
             while (System.currentTimeMillis() < stopTime) {
                 V value = isTrue.apply(bot);
                 // 为true或任意非null值时正常返回
@@ -79,14 +81,13 @@ public class Wait {
                 }
                 waitOptions.waiting();
             }
-            cdl.countDown();
-            return null;
+            return result;
         });
         boolean await = cdl.await(waitOptions.getTimeout(), waitOptions.getTimeUnit());
         if (await) {
             return task.get();
         }
-        return defaultValue;
+        return result;
     }
 
     @SneakyThrows
@@ -103,7 +104,6 @@ public class Wait {
                 }
                 waitOptions.waiting();
             }
-            cdl.countDown();
             return null;
         });
         boolean await = cdl.await(waitOptions.getTimeout(), waitOptions.getTimeUnit());
@@ -115,6 +115,7 @@ public class Wait {
 
     @SneakyThrows
     <V> V implicitUntil(Function<? super Client, V> isTrue, V defaultValue) {
+        final V result = defaultValue;
         cdl = new CountDownLatch(1);
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
@@ -127,13 +128,12 @@ public class Wait {
                 }
                 waitOptions.waiting();
             }
-            cdl.countDown();
-            return null;
+            return result;
         });
         boolean await = cdl.await(waitOptions.getTimeout(), waitOptions.getTimeUnit());
         if (await) {
             return task.get();
         }
-        return defaultValue;
+        return result;
     }
 }
