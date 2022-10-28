@@ -69,6 +69,9 @@ public class LayoutCache {
     }
 
     public static Node findOneByCacheId(String cacheId) {
+        if (StringUtils.isEmpty(cacheId)) {
+            return null;
+        }
         refresh();
         List<Node> nodes = searchInTree(root, node -> cacheId.equals(node.getCacheId()), true);
         return nodes.size() > 0 ? nodes.get(0) : null;
@@ -122,6 +125,9 @@ public class LayoutCache {
         if (StringUtils.isEmpty(cacheId)) {
             refresh();
             cacheId = findCacheId(xpath);
+        }
+        if (StringUtils.isEmpty(cacheId)) {
+            return null;
         }
         String finalCacheId = cacheId;
         List<Node> nodes = searchInTree(root, node -> finalCacheId.equals(node.getCacheId()), true);
