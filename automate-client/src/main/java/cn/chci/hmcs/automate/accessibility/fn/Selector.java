@@ -26,14 +26,14 @@ public class Selector extends AbstractCommand<Response> {
         this.wait = wait;
     }
 
-    public Node findOne(Client client, By by) throws InterruptedException {
+    public Node findOne(Client client, By by) {
         if (by == null) {
             return null;
         }
         return findOne(client, by, true);
     }
 
-    public Node findOne(Client client, By by, Boolean inScreen) throws InterruptedException {
+    public Node findOne(Client client, By by, Boolean inScreen) {
         if (by == null || inScreen == null) {
             return null;
         }
@@ -49,14 +49,14 @@ public class Selector extends AbstractCommand<Response> {
         }, null);
     }
 
-    public List<Node> find(Client client, By by) throws InterruptedException {
+    public List<Node> find(Client client, By by) {
         if (by == null) {
             return Collections.emptyList();
         }
         return find(client, by, true);
     }
 
-    public List<Node> find(Client client, By by, Boolean inScreen) throws InterruptedException {
+    public List<Node> find(Client client, By by, Boolean inScreen) {
         if (by == null || inScreen == null) {
             return Collections.emptyList();
         }
