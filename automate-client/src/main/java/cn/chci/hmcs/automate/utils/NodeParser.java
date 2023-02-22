@@ -73,6 +73,7 @@ public class NodeParser {
         node.setChecked("true".equalsIgnoreCase(element.attributeValue("checked")));
         node.setClickable("true".equalsIgnoreCase(element.attributeValue("clickable")));
         node.setEnabled("true".equalsIgnoreCase(element.attributeValue("enabled")));
+        node.setEditable("true".equalsIgnoreCase(element.attributeValue("editable")));
         node.setFocusable("true".equalsIgnoreCase(element.attributeValue("focusable")));
         node.setFocused("true".equalsIgnoreCase(element.attributeValue("focused")));
         node.setScrollable("true".equalsIgnoreCase(element.attributeValue("scrollable")));
