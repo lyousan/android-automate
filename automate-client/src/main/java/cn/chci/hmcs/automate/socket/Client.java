@@ -3,6 +3,7 @@ package cn.chci.hmcs.automate.socket;
 import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.automate.utils.AdbUtils;
+import cn.chci.hmcs.automate.utils.NodeParser;
 import com.alibaba.fastjson2.JSON;
 import com.alibaba.fastjson2.JSONWriter;
 import lombok.Getter;
@@ -65,8 +66,8 @@ public class Client {
         pipedOut.connect(pipedIn);
         log.info("the connection with Automate established pc:port:{} android:port:{}", pcPort, androidPort);
         // 开启两个独立的线程去处理读和写
-        executorService.submit(new Thread(new SocketReadHandler(this, socket), "AutomateReader-" + udid));
-        executorService.submit(new Thread(new SocketWriteHandler(this, socket), "AutomateWriter-" + udid));
+        executorService.submit(new SocketReadHandler(this, socket), "AutomateReader-" + udid);
+        executorService.submit(new SocketWriteHandler(this, socket), "AutomateWriter-" + udid);
     }
 
     public void emit(Request request) {
@@ -80,6 +81,7 @@ public class Client {
         } catch (Exception e) {
             if (socket.isClosed()) {
                 log.warn("socket of Automate closed");
+                recycle();
             } else {
                 log.error("Client#emit error:", e);
             }
@@ -87,19 +89,26 @@ public class Client {
     }
 
     public void close() {
-        try {
-            Request request = new Request();
-            request.setCommand(new Command("close", null, null, null));
-            emit(request);
-            socket.close();
-            executorService.shutdownNow();
-            log.warn("Automate connection closed");
-        } catch (IOException e) {
-            log.error("close Automate error:", e);
-        }
+        Request request = new Request();
+        request.setCommand(new Command("close", null, null, null));
+        emit(request);
+        recycle();
+        log.warn("Automate connection closed");
     }
 
     public boolean isClosed() {
         return socket == null || socket.isClosed();
+    }
+
+    public void recycle() {
+        if (socket != null && !socket.isClosed()) {
+            try {
+                socket.close();
+            } catch (IOException e) {
+                log.error("close Automate error:", e);
+            }
+        }
+        executorService.shutdownNow();
+        NodeParser.localReader.remove();
     }
 }

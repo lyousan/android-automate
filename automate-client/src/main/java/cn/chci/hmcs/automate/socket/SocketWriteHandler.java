@@ -38,6 +38,7 @@ public class SocketWriteHandler implements Runnable {
         } catch (Exception e) {
             if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
+                client.recycle();
             } else {
                 log.error("socketWriter error:", e);
             }

@@ -4,6 +4,7 @@ import cn.chci.hmcs.automate.accessibility.fn.WaitOptions;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
+import cn.chci.hmcs.automate.utils.NodeParser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -27,7 +28,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndConnect("RKAM5L55T8FEHMOV");
+//        bot = AndroidBot.createAndConnect("MDX0220427011762");
     }
 
 
@@ -49,6 +50,34 @@ public class AutomatorTest {
             thread.start();
             thread.join();
         }
+    }
+
+    /**
+     * 复现多线程下同时转换Doc时的异常（采用单SAXReader），越复杂的界面耗时越长，越容易复现
+     * 改用ThreadLocal后解决了这个情况
+     *
+     * @throws InterruptedException
+     */
+    @Test
+    void testNodeParser() throws InterruptedException {
+        Thread thread1 = new Thread(() -> {
+            AndroidBot bot = AndroidBot.createAndConnect("5ea890e60407");
+            for (int i = 0; i < 1000; i++) {
+                NodeParser.parse(bot.dump());
+            }
+        }, "5ea890e60407");
+        Thread thread2 = new Thread(() -> {
+            AndroidBot bot = AndroidBot.createAndConnect("MDX0220427011762");
+            for (int i = 0; i < 1000; i++) {
+                NodeParser.parse(bot.dump());
+            }
+        }, "MDX0220427011762");
+        long begin = System.currentTimeMillis();
+        thread1.start();
+        thread2.start();
+        thread1.join();
+        thread2.join();
+        System.out.println("finish: " + (System.currentTimeMillis() - begin));
     }
 
     @Test

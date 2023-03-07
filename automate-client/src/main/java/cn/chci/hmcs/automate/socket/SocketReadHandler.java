@@ -80,6 +80,7 @@ public class SocketReadHandler implements Runnable {
         } catch (Exception e) {
             if (socket == null ||socket.isClosed()) {
                 log.warn("socket of Automate closed");
+                client.recycle();
             } else {
                 log.error("socketReader error:", e);
             }

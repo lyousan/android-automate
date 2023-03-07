@@ -6,6 +6,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
+import org.xml.sax.SAXException;
 
 import java.awt.*;
 import java.io.ByteArrayInputStream;
@@ -18,7 +19,25 @@ import java.util.Iterator;
  * @Description
  **/
 public class NodeParser {
-    private static final SAXReader XML_READER = new SAXReader();
+    /**
+     * 这个SAXReader在多线程情况下是存在问题的，多个线程同时解析时会抛出一个{@link org.xml.sax.SAXException}异常，
+     * FWK005 parse may not be called while parsing.
+     * 异常的原因是在转换Doc的时候又来了一个请求转换
+     * 直接加锁对性能影响很大，本就耗时的过程还需要排队了，所有这里采用ThreadLocal优化，每个线程独享一个reader,
+     * 但是实测下来 直接加锁和ThreadLocal的性能上区别不大(只用了两台手机，量比较小)，而且都能解决这个异常
+     */
+//    @Deprecated
+//    private static final SAXReader XML_READER = new SAXReader();
+    public static final ThreadLocal<SAXReader> localReader = new ThreadLocal<>();
+
+    public static SAXReader getReader() {
+        SAXReader reader = localReader.get();
+        if (reader == null) {
+            reader = new SAXReader();
+            localReader.set(reader);
+        }
+        return reader;
+    }
 
     public static Node parse(String xml) {
         return parse(xml, null);
@@ -30,7 +49,7 @@ public class NodeParser {
         }
         Node node = null;
         try {
-            Document doc = XML_READER.read(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
+            Document doc = getReader().read(new ByteArrayInputStream(xml.getBytes(StandardCharsets.UTF_8)));
             Element root = doc.getRootElement();
             node = parse(root, null, client, true);
         } catch (DocumentException e) {
