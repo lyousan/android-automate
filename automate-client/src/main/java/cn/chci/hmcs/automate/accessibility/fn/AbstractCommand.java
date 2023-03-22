@@ -113,6 +113,9 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     }
 
     protected void defaultOnException(Request request, Exception e) throws Exception {
+        if (e instanceof InterruptedException) {
+            return;
+        }
         logger.error("请求[ " + request.getId() + " ]发生异常", e);
         throw e;
     }

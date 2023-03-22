@@ -1,11 +1,8 @@
 package cn.chci.hmcs.automate.socket;
 
-import cn.chci.hmcs.automate.accessibility.fn.AbstractCommand;
 import cn.chci.hmcs.automate.accessibility.fn.Global;
 import cn.chci.hmcs.automate.dto.Request;
-import cn.chci.hmcs.automate.dto.Response;
-import cn.chci.hmcs.automate.exception.AutomateException;
-import cn.chci.hmcs.automate.exception.ClientException;
+import cn.chci.hmcs.automate.exception.TimeoutException;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.automate.utils.AdbUtils;
 import cn.chci.hmcs.automate.utils.NodeParser;
@@ -17,7 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.net.Socket;
-import java.util.concurrent.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @Author 有三
@@ -107,7 +107,7 @@ public class Client {
         global.setTimeout(2L);
         try {
             return global.ping(this);
-        } catch (AutomateException e) {
+        } catch (TimeoutException e) {
             return false;
         }
     }

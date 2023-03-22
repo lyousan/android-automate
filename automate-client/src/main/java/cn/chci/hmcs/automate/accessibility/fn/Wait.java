@@ -66,7 +66,7 @@ public class Wait {
     }
 
     @SneakyThrows
-    public <V> V until(Function<? super AndroidBot, V> isTrue,V defaultValue) {
+    public <V> V until(Function<? super AndroidBot, V> isTrue, V defaultValue) {
         final V result = defaultValue;
         cdl = new CountDownLatch(1);
         long stopTime = waitOptions.calcStopTime();
@@ -95,21 +95,32 @@ public class Wait {
         cdl = new CountDownLatch(1);
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
-            while (System.currentTimeMillis() < stopTime) {
-                V value = isTrue.apply(bot);
-                // 为true或任意非null值时正常返回
-                if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
-                    cdl.countDown();
-                    return value;
+            try {
+                while (System.currentTimeMillis() < stopTime) {
+                    V value = isTrue.apply(bot);
+                    // 为true或任意非null值时正常返回
+                    if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
+                        cdl.countDown();
+                        return value;
+                    }
+                    waitOptions.waiting();
                 }
-                waitOptions.waiting();
+            } finally {
+                cdl.countDown();
             }
             return null;
         });
         boolean await = cdl.await(waitOptions.getTimeout(), waitOptions.getTimeUnit());
         if (await) {
-            return task.get();
+            try {
+                return task.get();
+            } catch (ExecutionException e) {
+                if (!(e.getCause() instanceof InterruptedException)) {
+                    throw e.getCause();
+                }
+            }
         }
+        task.cancel(true);
         throw new TimeoutException(String.format("超时：条件 ==> %s; 时间：%s", isTrue, waitOptions));
     }
 
@@ -119,21 +130,32 @@ public class Wait {
         cdl = new CountDownLatch(1);
         long stopTime = waitOptions.calcStopTime();
         Future<V> task = WORKER.submit(() -> {
-            while (System.currentTimeMillis() < stopTime) {
-                V value = isTrue.apply(client);
-                // 为true或任意非null值时正常返回
-                if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
-                    cdl.countDown();
-                    return value;
+            try {
+                while (System.currentTimeMillis() < stopTime) {
+                    V value = isTrue.apply(client);
+                    // 为true或任意非null值时正常返回
+                    if (value != null && (Boolean.class != value.getClass() || Boolean.TRUE.equals(value))) {
+                        cdl.countDown();
+                        return value;
+                    }
+                    waitOptions.waiting();
                 }
-                waitOptions.waiting();
+            } finally {
+                cdl.countDown();
             }
             return result;
         });
         boolean await = cdl.await(waitOptions.getTimeout(), waitOptions.getTimeUnit());
         if (await) {
-            return task.get();
+            try {
+                return task.get();
+            } catch (ExecutionException e) {
+                if (!(e.getCause() instanceof InterruptedException)) {
+                    throw e.getCause();
+                }
+            }
         }
+        task.cancel(true);
         return result;
     }
 }

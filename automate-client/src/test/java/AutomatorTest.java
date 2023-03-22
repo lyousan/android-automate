@@ -31,7 +31,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndConnect("OZRWWOR4YPHIHQ4T", true);
+        bot = AndroidBot.createAndConnect("OZRWWOR4YPHIHQ4T", false);
     }
 
     @Test
@@ -41,15 +41,19 @@ public class AutomatorTest {
 
     @Test
     void testClosedException() throws IOException, InterruptedException {
-        bot.dump();
-        boolean closed = bot.getClient().isClosed();
+//        bot.dump();
+//        boolean closed = bot.getClient().isClosed();
 //        Node node = bot.findOne(By.id("123"));
-        AdbUtils.exec("adb -s OZRWWOR4YPHIHQ4T shell am force-stop " + PACKAGE_NAME);
+//        AdbUtils.exec("adb -s OZRWWOR4YPHIHQ4T shell am force-stop " + PACKAGE_NAME);
 //        closed = bot.getClient().isClosed();
-//        node = bot.findOne(By.id("123"));
-        bot.dump();
+        bot.getSelector().setTimeout(2L);
+        bot.setSelectorWaitOption(new WaitOptions(5L, 1L, TimeUnit.SECONDS));
+//        Node node = bot.findOne(By.id("123"));
+//        List<Node> nodes = bot.find(By.id("123"));
+        List<Node> nodes1 = bot.find(By.xpath("123"));
+//        bot.dump();
         log.info("123123123");
-        log.info("client==>{}", bot.getClient().isClosed());
+//        log.info("client==>{}", bot.getClient().isClosed());
     }
 
     @Test

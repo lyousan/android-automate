@@ -13,8 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutorService;
 
 @Slf4j
 public class Selector extends AbstractCommand<Response> {
@@ -37,16 +35,28 @@ public class Selector extends AbstractCommand<Response> {
         if (by == null || inScreen == null) {
             return null;
         }
-        return wait.implicitUntil(c -> {
-            Request request = new Request();
-            Command command = new Command("Selector", "findOne", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
-            request.setCommand(command);
-            Response response = send(c, request);
+        Node node = null;
+        Request request = new Request();
+        Command command = new Command("Selector", "findOne", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
+        request.setCommand(command);
+        try {
+            Response response = send(client, request);
             if (response != null && response.getData() != null) {
-                return NodeParser.parse(response.getData().toString(), c);
+                node = NodeParser.parse(response.getData().toString(), client);
             }
-            return null;
-        }, null);
+        } catch (Exception ignore) {
+        }
+        // 第一次没有成功获取到时进行隐式重试
+        if (node == null) {
+            node = wait.implicitUntil(c -> {
+                Response response = send(c, request);
+                if (response != null && response.getData() != null) {
+                    return NodeParser.parse(response.getData().toString(), c);
+                }
+                return null;
+            }, null);
+        }
+        return node;
     }
 
     public List<Node> find(Client client, By by) {
@@ -60,19 +70,32 @@ public class Selector extends AbstractCommand<Response> {
         if (by == null || inScreen == null) {
             return Collections.emptyList();
         }
-        return wait.implicitUntil(c -> {
-            List<Node> nodes = new ArrayList<>();
-            Request request = new Request();
-            Command command = new Command("Selector", "find", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
-            request.setCommand(command);
+        List<Node> nodes = new ArrayList<>();
+        Request request = new Request();
+        Command command = new Command("Selector", "find", new Class[]{By.class, Boolean.class}, new Object[]{by, inScreen});
+        request.setCommand(command);
+        try {
             Response response = send(client, request);
             if (response != null && response.getData() instanceof List) {
                 for (Object s : ((List<?>) response.getData())) {
                     nodes.add(NodeParser.parse(s.toString(), client));
                 }
             }
-            return nodes;
-        }, Collections.emptyList());
+        } catch (Exception ignore) {
+        }
+        // 第一次没有成功获取到时进行隐式重试
+        if (nodes.isEmpty()) {
+            wait.implicitUntil(c -> {
+                Response response = send(c, request);
+                if (response != null && response.getData() instanceof List) {
+                    for (Object s : ((List<?>) response.getData())) {
+                        nodes.add(NodeParser.parse(s.toString(), client));
+                    }
+                }
+                return nodes;
+            }, Collections.emptyList());
+        }
+        return nodes;
     }
 
 }
