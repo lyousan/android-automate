@@ -144,6 +144,7 @@
 
     <logger name="cn.chci.hmcs.automate" level="debug" additivity="false">
         <appender-ref ref="AUTOMATE_FILE"/>
+<!--        <appender-ref ref="CONSOLE"/>-->
     </logger>
 
     <root level="INFO">

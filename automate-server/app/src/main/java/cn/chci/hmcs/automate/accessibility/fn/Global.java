@@ -27,6 +27,10 @@ public class Global extends Command {
         accessibilityServiceUtils.gotoAccessibilitySetting();
     }
 
+    public String ping() {
+        return "pong";
+    }
+
     /**
      * 回退
      *

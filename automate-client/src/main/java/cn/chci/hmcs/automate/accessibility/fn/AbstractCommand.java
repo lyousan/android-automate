@@ -2,6 +2,7 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.automate.dto.Response;
+import cn.chci.hmcs.automate.exception.AutomateClosedException;
 import cn.chci.hmcs.automate.exception.TimeoutException;
 import cn.chci.hmcs.automate.handler.ExceptionHandler;
 import cn.chci.hmcs.automate.handler.ResponseHandler;
@@ -69,7 +70,8 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
             // 发送请求
             client.emit(request);
             // 等待异步响应
-            if (!countDownLatch.await(DEFAULT_TIMEOUT, DEFAULT_TIMEOUT_UNIT)) {
+            if (!countDownLatch.await(timeout, timeoutUnit)) {
+                if (client.isClosed()) throw new AutomateClosedException("Automate连接已断开");
                 // 超时
                 throw new TimeoutException("响应超时");
             }

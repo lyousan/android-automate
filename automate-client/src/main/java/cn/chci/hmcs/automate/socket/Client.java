@@ -1,6 +1,11 @@
 package cn.chci.hmcs.automate.socket;
 
+import cn.chci.hmcs.automate.accessibility.fn.AbstractCommand;
+import cn.chci.hmcs.automate.accessibility.fn.Global;
 import cn.chci.hmcs.automate.dto.Request;
+import cn.chci.hmcs.automate.dto.Response;
+import cn.chci.hmcs.automate.exception.AutomateException;
+import cn.chci.hmcs.automate.exception.ClientException;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.automate.utils.AdbUtils;
 import cn.chci.hmcs.automate.utils.NodeParser;
@@ -60,8 +65,8 @@ public class Client {
         AdbUtils.exec("adb -s " + udid + " forward tcp:" + pcPort + " tcp:" + androidPort + "");
         // 启动app
         AdbUtils.exec("adb -s " + udid + " shell am start " + PACKAGE_NAME + "/.MainActivity");
-        // 回退app
-        AdbUtils.exec("adb -s " + udid + " shell input keyevent 4");
+        // 需要等待app启动
+        Thread.sleep(1000);
         socket = new Socket("127.0.0.1", pcPort);
         pipedOut.connect(pipedIn);
         log.info("the connection with Automate established pc:port:{} android:port:{}", pcPort, androidPort);
@@ -97,8 +102,16 @@ public class Client {
     }
 
     public boolean isClosed() {
-        return socket == null || socket.isClosed();
+        if (socket == null || socket.isClosed()) return true;
+        Global global = new Global();
+        global.setTimeout(2L);
+        try {
+            return global.ping(this);
+        } catch (AutomateException e) {
+            return false;
+        }
     }
+
 
     public void recycle() {
         if (socket != null && !socket.isClosed()) {

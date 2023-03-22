@@ -37,6 +37,8 @@ public class MainActivity extends AppCompatActivity {
         init();
         // 启动socket服务端，端口是33579，客户端（PC）连接前记得连接数据线，然后通过adb进行端口转发
         Server.start();
+        // 关闭activity
+        this.finish();
     }
 
     private void init() {

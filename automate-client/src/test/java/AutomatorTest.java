@@ -4,6 +4,7 @@ import cn.chci.hmcs.automate.accessibility.fn.WaitOptions;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
+import cn.chci.hmcs.automate.utils.AdbUtils;
 import cn.chci.hmcs.automate.utils.NodeParser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -13,6 +14,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
+
+import static cn.chci.hmcs.automate.socket.Client.PACKAGE_NAME;
 
 /**
  * @author 有三
@@ -28,9 +31,26 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-//        bot = AndroidBot.createAndConnect("MDX0220427011762");
+        bot = AndroidBot.createAndConnect("OZRWWOR4YPHIHQ4T", true);
     }
 
+    @Test
+    void ping() {
+        System.out.println(bot.getGlobal().ping(bot.getClient()));
+    }
+
+    @Test
+    void testClosedException() throws IOException, InterruptedException {
+        bot.dump();
+        boolean closed = bot.getClient().isClosed();
+//        Node node = bot.findOne(By.id("123"));
+        AdbUtils.exec("adb -s OZRWWOR4YPHIHQ4T shell am force-stop " + PACKAGE_NAME);
+//        closed = bot.getClient().isClosed();
+//        node = bot.findOne(By.id("123"));
+        bot.dump();
+        log.info("123123123");
+        log.info("client==>{}", bot.getClient().isClosed());
+    }
 
     @Test
     void test() throws InterruptedException {

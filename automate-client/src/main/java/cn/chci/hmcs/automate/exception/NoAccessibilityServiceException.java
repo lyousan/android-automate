@@ -5,7 +5,7 @@ package cn.chci.hmcs.automate.exception;
  * @date 2022-08-11 16:01
  * @description
  **/
-public class NoAccessibilityServiceException extends ServerException{
+public class NoAccessibilityServiceException extends ClientException{
     public NoAccessibilityServiceException() {
         super();
     }

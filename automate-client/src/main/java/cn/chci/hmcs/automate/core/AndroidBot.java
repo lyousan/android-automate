@@ -69,6 +69,10 @@ public class AndroidBot {
         selector.getWait().close();
     }
 
+    public boolean isClose() {
+        return client.isClosed();
+    }
+
     public String dump() {
         return dump.dump(client);
     }
