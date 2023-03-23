@@ -4,7 +4,6 @@ import cn.chci.hmcs.automate.accessibility.fn.WaitOptions;
 import cn.chci.hmcs.automate.core.AndroidBot;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.model.Point;
-import cn.chci.hmcs.automate.utils.AdbUtils;
 import cn.chci.hmcs.automate.utils.NodeParser;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,8 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-
-import static cn.chci.hmcs.automate.socket.Client.PACKAGE_NAME;
 
 /**
  * @author 有三
@@ -35,6 +32,19 @@ public class AutomatorTest {
     }
 
     @Test
+    void testSubFind() {
+        Node item = bot.findOne(By.xpath("//*[@resource-id=\"com.xingin.xhs:id/dv1\"]/*[@class=\"android.widget.RelativeLayout\"][2]"));
+        Node name = item.findOne(By.id("com.xingin.xhs:id/dvq"));
+        log.info("name ==> {}", name.getText());
+        List<Node> any = item.find(By.xpath("*"));
+        log.info("any ==> {}", any.size());
+        Node desc = item.findOne(By.xpath("//*[contains(@text,'粉丝')]"));
+        log.info("desc ==> {}", desc.getText());
+        Node parent = item.findOne(By.xpath(".."));
+        log.info("parent ==> {}", parent.getId());
+    }
+
+    @Test
     void ping() {
         System.out.println(bot.getGlobal().ping(bot.getClient()));
     }
@@ -43,10 +53,11 @@ public class AutomatorTest {
     void testClosedException() throws IOException, InterruptedException {
 //        bot.dump();
 //        boolean closed = bot.getClient().isClosed();
+        System.out.println(bot.isClose());
 //        Node node = bot.findOne(By.id("123"));
 //        AdbUtils.exec("adb -s OZRWWOR4YPHIHQ4T shell am force-stop " + PACKAGE_NAME);
 //        closed = bot.getClient().isClosed();
-        bot.getSelector().setTimeout(2L);
+        bot.getSelector().setTimeout(1L);
         bot.setSelectorWaitOption(new WaitOptions(5L, 1L, TimeUnit.SECONDS));
 //        Node node = bot.findOne(By.id("123"));
 //        List<Node> nodes = bot.find(By.id("123"));

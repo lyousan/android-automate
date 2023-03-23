@@ -20,7 +20,7 @@ import java.util.List;
  * @description
  **/
 @Slf4j
-public class AndroidBot {
+public class AndroidBot implements Selectable {
     @Getter
     private final Client client;
     @Getter
@@ -94,6 +94,7 @@ public class AndroidBot {
     }
 
     @SneakyThrows
+    @Override
     public List<Node> find(By by) {
         if (by == null) {
             return null;

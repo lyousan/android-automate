@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Slf4j
-public class Selector extends AbstractCommand<Response> {
+public class Selector extends AbstractCommand<Response>{
     @Setter
     @Getter
     private Wait wait;

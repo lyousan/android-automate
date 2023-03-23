@@ -78,7 +78,7 @@ public class Client {
     public void emit(Request request) {
         try {
             String msg = JSON.toJSONString(request);
-            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
+//            BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
             writer.write(msg);
             writer.newLine();
             writer.flush();

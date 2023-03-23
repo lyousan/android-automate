@@ -1,9 +1,10 @@
 package cn.chci.hmcs.automate.model;
 
-import cn.chci.hmcs.automate.accessibility.fn.NodeActions;
+import cn.chci.hmcs.automate.accessibility.fn.*;
 import cn.chci.hmcs.automate.socket.Client;
 
 import java.awt.*;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,13 +13,14 @@ import java.util.List;
  * @Date 2022-07-28 22:12
  * @Description
  **/
-public class Node {
+public class Node implements Selectable {
     /**
      * 这个客户端的引用是用来实现一些节点相关的操作，如click，input等
      */
     private Client client;
 
     private NodeActions nodeActions;
+    private Selector selector;
     /**
      * 通过find和findOne系列方法得到Node都没有parent，因为服务端在xpath的实现上存在着问题，实际上只返回了这个节点及其子孙节点，
      * 后期如果有需要的话可以做一个懒加载，需要访问parent的时候去重新获取
@@ -265,5 +267,39 @@ public class Node {
 
     public void setEditable(boolean editable) {
         this.editable = editable;
+    }
+
+    @Override
+    public List<Node> find(By by) {
+        return find(by, true);
+    }
+
+    @Override
+    public List<Node> find(By by, boolean inScreen) {
+        if (selector == null) {
+            selector = new Selector(new Wait(client, WaitOptions.DEFAULT_WAIT_OPTIONS));
+        }
+        changeAnchor(by);
+        return selector.find(client, by, inScreen);
+    }
+
+    @Override
+    public Node findOne(By by) {
+        return findOne(by, true);
+    }
+
+    @Override
+    public Node findOne(By by, boolean inScreen) {
+        if (selector == null) {
+            selector = new Selector(new Wait(client, WaitOptions.DEFAULT_WAIT_OPTIONS));
+        }
+        changeAnchor(by);
+        return selector.findOne(client, by, inScreen);
+    }
+
+    private void changeAnchor(By by) {
+        String xpath = by.getXpath();
+        xpath = "//*[@cacheId=\"" + cacheId + "\"]/." + (xpath.startsWith("/") ? xpath : "/" + xpath);
+        by.setXpath(xpath);
     }
 }
