@@ -14,6 +14,12 @@ import cn.chci.hmcs.automate.socket.Client;
  **/
 public class Global extends AbstractCommand<Response> {
 
+    /**
+     * 测试与服务端的连接
+     *
+     * @param client
+     * @return true正常/false不正常
+     */
     public boolean ping(Client client) {
         Request request = new Request();
         request.setCommand(new Command("Global", "ping", new Class[0], new Object[0]));

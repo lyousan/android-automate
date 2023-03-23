@@ -104,9 +104,9 @@ public class Client {
     public boolean isClosed() {
         if (socket == null || socket.isClosed()) return true;
         Global global = new Global();
-        global.setTimeout(2L);
+        global.setTimeout(5L);
         try {
-            return global.ping(this);
+            return !global.ping(this);
         } catch (TimeoutException e) {
             return false;
         }

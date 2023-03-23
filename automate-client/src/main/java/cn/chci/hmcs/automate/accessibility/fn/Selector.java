@@ -2,6 +2,7 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import cn.chci.hmcs.automate.dto.Request;
 import cn.chci.hmcs.automate.dto.Response;
+import cn.chci.hmcs.automate.exception.ServerException;
 import cn.chci.hmcs.automate.model.Command;
 import cn.chci.hmcs.automate.model.Node;
 import cn.chci.hmcs.automate.socket.Client;
@@ -44,7 +45,7 @@ public class Selector extends AbstractCommand<Response> {
             if (response != null && response.getData() != null) {
                 node = NodeParser.parse(response.getData().toString(), client);
             }
-        } catch (Exception ignore) {
+        } catch (ServerException ignore) {
         }
         // 第一次没有成功获取到时进行隐式重试
         if (node == null) {
@@ -81,7 +82,7 @@ public class Selector extends AbstractCommand<Response> {
                     nodes.add(NodeParser.parse(s.toString(), client));
                 }
             }
-        } catch (Exception ignore) {
+        } catch (ServerException ignore) {
         }
         // 第一次没有成功获取到时进行隐式重试
         if (nodes.isEmpty()) {
