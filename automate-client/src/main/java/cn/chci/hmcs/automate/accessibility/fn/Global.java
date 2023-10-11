@@ -22,9 +22,9 @@ public class Global extends AbstractCommand<Response> {
      */
     public boolean ping(Client client) {
         Request request = new Request();
-        request.setCommand(new Command("Global", "ping", new Class[0], new Object[0]));
+        request.setCommand(new Command("ping", "Global", "ping", new Class[0], new Object[0]));
         Response response = send(client, request);
-        return "pong".equals(response.getData().toString());
+        return response != null && "pong".equals(response.getData().toString());
     }
 
     public void gotoAccessibilitySettings(Client client) {

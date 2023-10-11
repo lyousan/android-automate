@@ -9,6 +9,6 @@ import cn.chci.hmcs.automate.dto.Response;
  * @description
  **/
 @FunctionalInterface
-public interface ResponseHandler {
-    void handle(Request request, Response response) throws Exception;
+public interface ResponseHandler<T extends Response> {
+    T handle(Request request, T response) throws Exception;
 }

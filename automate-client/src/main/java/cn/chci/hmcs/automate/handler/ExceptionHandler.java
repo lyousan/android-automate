@@ -1,6 +1,8 @@
 package cn.chci.hmcs.automate.handler;
 
 import cn.chci.hmcs.automate.dto.Request;
+import cn.chci.hmcs.automate.dto.Response;
+import cn.chci.hmcs.automate.socket.Client;
 
 /**
  * @Author 有三
@@ -8,6 +10,6 @@ import cn.chci.hmcs.automate.dto.Request;
  * @Description
  **/
 @FunctionalInterface
-public interface ExceptionHandler {
-    void handle(Request request, Exception e) throws Exception;
+public interface ExceptionHandler<T extends Response> {
+    T handle(Client client, Request request, Exception e) throws Exception;
 }

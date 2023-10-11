@@ -16,6 +16,8 @@ import org.slf4j.Logger;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.net.ConnectException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CountDownLatch;
@@ -35,8 +37,9 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     protected TimeUnit timeoutUnit = DEFAULT_TIMEOUT_UNIT;
     private CountDownLatch countDownLatch = new CountDownLatch(1);
     protected final Map<String, T> RESULT = new HashMap<>();
-    protected final ExceptionHandler DEFAULT_EXCEPTION_HANDLER = this::defaultOnException;
-    protected final ResponseHandler DEFAULT_RESPONSE_HANDLER = this::defaultOnResponse;
+    protected final ExceptionHandler<T> DEFAULT_EXCEPTION_HANDLER = this::defaultOnException;
+    protected final ResponseHandler<T> DEFAULT_RESPONSE_HANDLER = this::defaultOnResponse;
+    protected int reconnectedCount = 0;
 
     public AbstractCommand() {
         try {
@@ -58,10 +61,11 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
     }
 
     @SneakyThrows
-    public synchronized T send(Client client, Request request, ResponseHandler responseHandler, ExceptionHandler exceptionHandler) {
+    public synchronized T send(Client client, Request request, ResponseHandler<T> responseHandler, ExceptionHandler<T> exceptionHandler) {
         if (request == null) {
             throw new IllegalArgumentException("request is null");
         }
+        T response = null;
         try {
             // 注册响应监听器
             ResponseListenerContextHolder.register(request.getId(), this);
@@ -71,30 +75,32 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
             client.emit(request);
             // 等待异步响应
             if (!countDownLatch.await(timeout, timeoutUnit)) {
-                if (client.isClosed()) throw new AutomateClosedException("Automate连接已断开");
+                if (client.isClosed()) {
+                    throw new AutomateClosedException("Automate连接已断开");
+                }
                 // 超时
                 throw new TimeoutException("响应超时");
             }
             // 返回响应
-            T response = RESULT.get(request.getId());
-            responseHandler.handle(request, response);
-            return response;
+            response = RESULT.get(request.getId());
+            response = responseHandler.handle(request, response);
+            reconnectedCount = 0;
         } catch (Exception e) {
             // 异常处理
-            exceptionHandler.handle(request, e);
+            response = exceptionHandler.handle(client, request, e);
         } finally {
             // 注销监听，移除本次响应，重置cdl（不重置的话下一次请求就不会阻塞等待响应了，会导致响应为null）
             ResponseListenerContextHolder.remove(request.getId());
             RESULT.remove(request.getId());
             countDownLatch = new CountDownLatch(1);
         }
-        return null;
+        return response;
     }
 
-    protected void defaultOnResponse(Request request, Response response) throws Exception {
+    protected T defaultOnResponse(Request request, T response) throws Exception {
         if (response == null) {
             logger.error("服务端返回为null");
-            return;
+            return null;
         }
         String code = String.valueOf(response.getCode());
         // 包装原始异常
@@ -110,11 +116,30 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
                 logger.error("处理异常时发生异常 ==> ", e);
             }
         }
+        return response;
     }
 
-    protected void defaultOnException(Request request, Exception e) throws Exception {
+    protected T defaultOnException(Client client, Request request, Exception e) throws Exception {
         if (e instanceof InterruptedException) {
-            return;
+            return null;
+        }
+        // 断线重连
+        if (e instanceof AutomateClosedException || e instanceof ConnectException) {
+            if (reconnectedCount++ < client.reconnectCount) {
+                logger.warn("Automate连接异常，等待重试[{}]", reconnectedCount);
+                TimeUnit.SECONDS.sleep(5);
+                try {
+                    client.close();
+                    client = new Client(client.getUdid());
+                    client.connect(false);
+                } catch (Exception ignore) {
+                }
+                countDownLatch = new CountDownLatch(1);
+                if ("ping".equals(request.getCommand().getCommandName())) {
+                    return null;
+                }
+                return send(client, request);
+            }
         }
         logger.error("请求[ " + request.getId() + " ]发生异常", e);
         throw e;
@@ -141,5 +166,17 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
         RESULT.put(t.getRequestId(), t);
         countDownLatch.countDown();
     }
+
+    public static void main(String[] args) {
+        ArrayList<String> list = new ArrayList<>();
+        list.add("old String");
+        foo(list.get(0));
+        System.out.println(list.get(0));
+    }
+
+    private static void foo(String string) {
+        string = new String("new String");
+    }
+
 
 }

@@ -28,7 +28,7 @@ public class AutomatorTest {
     void init() throws IOException, InterruptedException {
         // 退回桌面
 //        AdbUtils.exec("adb -s RKAM5L55T8FEHMOV shell input keyevent 3");
-        bot = AndroidBot.createAndConnect("OZRWWOR4YPHIHQ4T", false);
+        bot = AndroidBot.createAndConnect("H6GU5HPVHM9DHMQG", false);
     }
 
     @Test
@@ -117,6 +117,7 @@ public class AutomatorTest {
 
     @Test
     void testDump() {
+//        bot.getDump().setTimeout(5L);
         String dump = bot.dump();
         log.info("dump: {}", dump);
         bot.close();

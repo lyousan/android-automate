@@ -64,6 +64,14 @@ public class AndroidBot implements Selectable {
         return androidBot;
     }
 
+    public void setReconnectCount(int count) {
+        client.reconnectCount = Math.max(0, count);
+    }
+
+    public int getReconnectCount() {
+        return client.reconnectCount;
+    }
+
     public void close() {
         client.close();
         selector.getWait().close();

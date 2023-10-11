@@ -13,6 +13,7 @@ import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -30,19 +31,21 @@ public class Client {
     public static final Integer DEFAULT_PC_PORT = 33579;
     public static final Integer DEFAULT_ANDROID_PORT = 33579;
     @Getter
-    final private Integer pcPort;
+    private Integer pcPort;
     @Getter
-    final private Integer androidPort;
+    private Integer androidPort;
     @Getter
     final private String udid;
+    public int reconnectCount = DEFAULT_RECONNECT_COUNT;
+    public static final int DEFAULT_RECONNECT_COUNT = 3;
     /**
      * 缓存管道
      */
-    final PipedInputStream pipedIn = new PipedInputStream();
-    final PipedOutputStream pipedOut = new PipedOutputStream();
-    final BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
-    Socket socket = null;
-    final ExecutorService executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
+    PipedInputStream pipedIn;
+    PipedOutputStream pipedOut;
+    BufferedWriter writer;
+    Socket socket;
+    ExecutorService executorService;
 
     public Client(String udid) {
         this(udid, DEFAULT_PC_PORT, DEFAULT_ANDROID_PORT);
@@ -55,20 +58,30 @@ public class Client {
     }
 
     @SneakyThrows
+    private void readyResource() {
+        socket = new Socket("127.0.0.1", pcPort);
+        pipedIn = new PipedInputStream();
+        pipedOut = new PipedOutputStream();
+        pipedOut.connect(pipedIn);
+        writer = new BufferedWriter(new OutputStreamWriter(pipedOut));
+        executorService = new ThreadPoolExecutor(2, 2, 0L, TimeUnit.MILLISECONDS, new LinkedBlockingQueue());
+    }
+
+    @SneakyThrows
     public void connect(boolean stopExistServer) {
         if (stopExistServer) {
             AdbUtils.exec("adb -s " + udid + " shell am force-stop " + PACKAGE_NAME);
         }
+        pcPort = obtainPort(pcPort);
         // 提权获取无障碍权限（有可能显示已开启，但是不起作用，安卓系统的bug，需要重启）
         AdbUtils.exec("adb -s " + udid + " shell pm grant " + PACKAGE_NAME + " android.permission.WRITE_SECURE_SETTINGS");
         // 端口转发
-        AdbUtils.exec("adb -s " + udid + " forward tcp:" + pcPort + " tcp:" + androidPort + "");
+        AdbUtils.exec("adb -s " + udid + " forward tcp:" + pcPort + " tcp:" + androidPort);
         // 启动app
         AdbUtils.exec("adb -s " + udid + " shell am start " + PACKAGE_NAME + "/.MainActivity");
         // 需要等待app启动
         Thread.sleep(1000);
-        socket = new Socket("127.0.0.1", pcPort);
-        pipedOut.connect(pipedIn);
+        readyResource();
         log.info("the connection with Automate established pc:port:{} android:port:{}", pcPort, androidPort);
         // 开启两个独立的线程去处理读和写
         executorService.submit(new SocketReadHandler(this, socket), "AutomateReader-" + udid);
@@ -84,7 +97,7 @@ public class Client {
             writer.flush();
             log.debug("send request: {}\n", JSON.toJSONString(request, JSONWriter.Feature.PrettyFormat));
         } catch (Exception e) {
-            if (socket.isClosed()) {
+            if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
                 recycle();
             } else {
@@ -121,7 +134,42 @@ public class Client {
                 log.error("close Automate error:", e);
             }
         }
-        executorService.shutdownNow();
+        if (executorService != null) {
+            executorService.shutdownNow();
+            executorService = null;
+        }
+        try {
+            pipedIn.close();
+            pipedIn = null;
+        } catch (Exception ignore) {
+        }
+        try {
+            pipedOut.close();
+            pipedOut = null;
+        } catch (Exception ignore) {
+        }
+        try {
+            writer.close();
+            writer = null;
+        } catch (Exception ignore) {
+        }
         NodeParser.localReader.remove();
+        pcPort += 1;
+    }
+
+    private int obtainPort(int port) {
+        try (Socket socket = new Socket("127.0.0.1", port)) {
+            // 如果能够成功连接到指定的主机和端口，则端口被占用
+            InetSocketAddress inetSocketAddress = new InetSocketAddress(0);
+            try (Socket temp = new Socket();) {
+                temp.bind(inetSocketAddress);
+                return temp.getLocalPort();
+            } catch (Exception e) {
+                return port;
+            }
+        } catch (Exception e) {
+            // 如果连接发生异常，则端口未被占用
+            return port;
+        }
     }
 }

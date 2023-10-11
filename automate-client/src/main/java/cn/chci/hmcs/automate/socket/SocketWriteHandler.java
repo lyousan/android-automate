@@ -1,11 +1,11 @@
 package cn.chci.hmcs.automate.socket;
 
-import cn.chci.hmcs.automate.dto.Request;
-import com.alibaba.fastjson2.JSON;
-import com.alibaba.fastjson2.JSONWriter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.net.Socket;
 
 /**
@@ -25,6 +25,7 @@ public class SocketWriteHandler implements Runnable {
 
     @Override
     public void run() {
+        Thread.currentThread().setName("automate-writer[" + client.getUdid() + "]");
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(client.pipedIn));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
             String msg = null;

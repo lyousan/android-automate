@@ -30,6 +30,7 @@ public class SocketReadHandler implements Runnable {
 
     @Override
     public void run() {
+        Thread.currentThread().setName("automate-reader[" + client.getUdid() + "]");
         try (InputStream in = socket.getInputStream()) {
             byte[] buffer = new byte[8192];
             while (true) {
@@ -78,7 +79,7 @@ public class SocketReadHandler implements Runnable {
                 ResponseListenerContextHolder.trigger(response.getRequestId(), response);
             }
         } catch (Exception e) {
-            if (socket == null ||socket.isClosed()) {
+            if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
                 client.recycle();
             } else {
