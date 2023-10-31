@@ -11,6 +11,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.GZIPInputStream;
 
 /**
@@ -33,9 +34,9 @@ public class SocketReadHandler implements Runnable {
         Thread.currentThread().setName("automate-reader[" + client.getUdid() + "]");
         try (InputStream in = socket.getInputStream()) {
             byte[] buffer = new byte[8192];
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 if (in.available() == 0) {
-//                    Thread.sleep(100);
+                    TimeUnit.MILLISECONDS.sleep(100);
                     continue;
                 }
                 // 每一次读取到字节数量
@@ -81,7 +82,6 @@ public class SocketReadHandler implements Runnable {
         } catch (Exception e) {
             if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
-                client.recycle();
             } else {
                 log.error("socketReader error:", e);
             }

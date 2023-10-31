@@ -29,7 +29,7 @@ public class SocketWriteHandler implements Runnable {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(client.pipedIn));
              BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()))) {
             String msg = null;
-            while (true) {
+            while (!Thread.currentThread().isInterrupted()) {
                 msg = reader.readLine();
                 writer.write(msg);
                 writer.newLine();
@@ -39,7 +39,6 @@ public class SocketWriteHandler implements Runnable {
         } catch (Exception e) {
             if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
-                client.recycle();
             } else {
                 log.error("socketWriter error:", e);
             }

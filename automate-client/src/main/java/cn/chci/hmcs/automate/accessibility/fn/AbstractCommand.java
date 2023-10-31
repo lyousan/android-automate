@@ -125,19 +125,19 @@ public abstract class AbstractCommand<T extends Response> implements ResponseLis
         }
         // 断线重连
         if (e instanceof AutomateClosedException || e instanceof ConnectException) {
+            String commandName = request.getCommand().getCommandName();
+            if ("ping".equals(commandName) || "close".equals(commandName)) {
+                return null;
+            }
             if (reconnectedCount++ < client.reconnectCount) {
                 logger.warn("Automate连接异常，等待重试[{}]", reconnectedCount);
                 TimeUnit.SECONDS.sleep(5);
                 try {
-                    client.close();
-                    client = new Client(client.getUdid());
-                    client.connect(false);
+                    client.recycle();
+                    client.connect(true);
                 } catch (Exception ignore) {
                 }
                 countDownLatch = new CountDownLatch(1);
-                if ("ping".equals(request.getCommand().getCommandName())) {
-                    return null;
-                }
                 return send(client, request);
             }
         }

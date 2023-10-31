@@ -99,7 +99,6 @@ public class Client {
         } catch (Exception e) {
             if (socket == null || socket.isClosed()) {
                 log.warn("socket of Automate closed");
-                recycle();
             } else {
                 log.error("Client#emit error:", e);
             }
@@ -108,7 +107,7 @@ public class Client {
 
     public void close() {
         Request request = new Request();
-        request.setCommand(new Command("close", null, null, null));
+        request.setCommand(new Command("close", "close", null, null, null));
         emit(request);
         recycle();
         log.warn("Automate connection closed");
