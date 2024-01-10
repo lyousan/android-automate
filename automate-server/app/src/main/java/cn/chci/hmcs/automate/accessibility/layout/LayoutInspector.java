@@ -4,10 +4,14 @@ import android.accessibilityservice.AccessibilityService;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.HashMap;
+import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import cn.chci.hmcs.automate.MyAccessibilityService;
@@ -60,7 +64,7 @@ public class LayoutInspector {
             }
         }
         // 深度优先将界面节点重新包装一层构建成树形结构
-        Node nodeInfo = new Node(node, resources, parent, String.valueOf(node.hashCode()));
+        Node nodeInfo = new Node(node, resources, parent, String.valueOf(reHash(node)));
         int childCount = node.getChildCount();
         for (int i = 0; i < childCount; i++) {
             AccessibilityNodeInfo child = node.getChild(i);
@@ -69,5 +73,11 @@ public class LayoutInspector {
             }
         }
         return nodeInfo;
+    }
+
+    private int reHash(AccessibilityNodeInfo node) {
+        Rect rect = new Rect();
+        node.getBoundsInScreen(rect);
+        return Objects.hash(node, rect, node.getViewIdResourceName(), node.getClassName(), node.getText(), node.getContentDescription());
     }
 }
