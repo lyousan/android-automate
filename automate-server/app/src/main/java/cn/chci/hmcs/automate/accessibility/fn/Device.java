@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automate.accessibility.fn;
 
-import com.alibaba.fastjson2.JSON;
+import com.google.gson.Gson;
 
 import cn.chci.hmcs.automate.accessibility.device.DeviceInfoProvider;
 import cn.chci.hmcs.automate.model.Command;
@@ -15,6 +15,6 @@ public class Device extends Command {
     }
 
     public String getScreenSize() {
-        return JSON.toJSONString(new Rect(deviceInfoProvider.getDeviceSize()));
+        return new Gson().toJson(new Rect(deviceInfoProvider.getDeviceSize()));
     }
 }

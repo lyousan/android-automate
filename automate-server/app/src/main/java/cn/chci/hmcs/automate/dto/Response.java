@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automate.dto;
 
-import com.alibaba.fastjson2.JSON;
+import com.google.gson.Gson;
 
 public class Response {
     private int code;
@@ -46,7 +46,7 @@ public class Response {
     }
 
     public static String convertToJson(Response response) {
-        return JSON.toJSONString(response);
+        return new Gson().toJson(response);
     }
 
     public int getCode() {

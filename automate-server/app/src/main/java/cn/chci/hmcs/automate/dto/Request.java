@@ -1,6 +1,6 @@
 package cn.chci.hmcs.automate.dto;
 
-import com.alibaba.fastjson2.JSON;
+import com.google.gson.Gson;
 
 import cn.chci.hmcs.automate.model.Command;
 
@@ -13,7 +13,7 @@ public class Request {
     private long timestamp;
 
     public static Request convertToRequest(String content) {
-        return JSON.parseObject(content, Request.class);
+        return new Gson().fromJson(content, Request.class);
     }
 
     public Command getCommand() {

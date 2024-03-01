@@ -2,20 +2,21 @@ package cn.chci.hmcs.automate.accessibility.fn;
 
 import android.util.Log;
 
-import cn.chci.hmcs.automate.MyAccessibilityService;
-import cn.chci.hmcs.automate.dto.Response;
-import cn.chci.hmcs.automate.exception.CustomException;
-import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
-import cn.chci.hmcs.automate.model.Command;
-
-import com.alibaba.fastjson2.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Set;
+
+import cn.chci.hmcs.automate.MyAccessibilityService;
+import cn.chci.hmcs.automate.dto.Response;
+import cn.chci.hmcs.automate.exception.CustomException;
+import cn.chci.hmcs.automate.exception.NoAccessibilityServiceException;
+import cn.chci.hmcs.automate.model.Command;
 
 public class Executor {
     private static final String LOG_TAG = "Executor";
@@ -66,15 +67,15 @@ public class Executor {
         Class<?>[] classes = new Class[paramsType.length];
         Object[] params = command.getParams();
         Object param;
-        JSONObject jsonObject;
+        Map<String,Object> jsonObject;
         Field field;
         for (int i = 0; i < paramsType.length; i++) {
             // 还原参数真实的Class类型
             classes[i] = Class.forName(paramsType[i].toString());
-            // 转换参数的类型
-            if (params[i] instanceof JSONObject) {
+            // 转换参数的类型 Gson转换后的对象默认为LinkedTreeMap
+            if (params[i] instanceof Map) {
                 param = classes[i].newInstance();
-                jsonObject = ((JSONObject) params[i]);
+                jsonObject = (Map<String, Object>) params[i];
                 Set<String> fields = jsonObject.keySet();
                 for (String fieldName : fields) {
                     field = classes[i].getDeclaredField(fieldName);
